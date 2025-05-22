@@ -1,7 +1,14 @@
-import { Iotp } from '../../models/otp-model';
+import { IUser } from "../../models/user-model";
+import { IGenericRepository } from "../generic-repository";
 
-export default interface IAuthRepository {
-  createOtp(data: Partial<Iotp>): Promise<Iotp>;
-  findOtp(email: string, role: string): Promise<Iotp | null>;
-  deleteOtp(email: string, role: string): Promise<void>;
+export interface IUserRepository extends IGenericRepository<IUser> {
+  findByEmail(email: string): Promise<IUser | null>;
+  createUser(userData: IUser): Promise<IUser | null>;
+  resetPassword(email: string, password: string): Promise<IUser | null>;
+  googleLogin(
+    name: string,
+    email: string,
+    password: string
+  ): Promise<IUser | null>;
+  updateProfile(email: string, data: IUser): Promise<IUser | null>;
 }

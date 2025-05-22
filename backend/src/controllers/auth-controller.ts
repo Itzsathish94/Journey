@@ -8,7 +8,6 @@ import { statusCode } from '../utils/constants/messages/status.code';
 
 export class AuthController implements IAuthController {
   private authServices: IAuthServices;
-
   constructor(authServices: IAuthServices) {
     this.authServices = authServices;
   }

@@ -1,5 +1,5 @@
-import { IUserRepository } from '../repositories/interfaces/IUserRepository';
-import { UserRepository } from '../repositories/user-repository';
+import { IUserRepository } from '../repositories/interfaces/IAuthRepository';
+import { UserRepository } from '../repositories/auth-repository';
 import  IOtpRepository  from '../repositories/interfaces/IOtpRepository';
 import { OtpRespository } from '../repositories/otp-repository';
 import IRefreshTokenRepository from '../repositories/interfaces/IRefreshTokenRepository';

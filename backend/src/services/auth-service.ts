@@ -67,7 +67,7 @@ export class AuthServices implements IAuthServices {
       console.log(`[AuthService] User created successfully: ${user.email}`);
       await this.otpServices.deleteOtp(decoded.email, role);
       return user;
-    } catch (error: any) {
+    } catch (error:any) {
       console.error(`[AuthService] OTP verification error: ${error.message}`);
       throw error;
     }

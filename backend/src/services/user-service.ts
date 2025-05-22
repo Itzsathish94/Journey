@@ -1,5 +1,5 @@
 import { IUser, IUserDTO } from '../models/user-model';
-import { IUserRepository } from '../repositories/interfaces/IUserRepository';
+import { IUserRepository } from '../repositories/interfaces/IAuthRepository';
 import { Roles } from '../utils/enum';
 import IUserServices from './interfaces/IUserServices';
 
