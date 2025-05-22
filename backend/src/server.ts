@@ -1,41 +1,48 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import helmet from 'helmet';
-import rateLimit from 'express-rate-limit';
-import dotenv from 'dotenv';
-// import authRoutes from './routes/auth';
-// import userRoutes from './routes/user';
+import './utils/loadEnv'
 
-dotenv.config();
+import express,{Application} from "express"
+import cookieParser from 'cookie-parser';
+import connectDB from "./config/db";
+import cors from 'cors'
+import userRoutes from "./routes/user-routes";
+import authRoutes from './routes/auth-routes';
+import { PORT, FRONTEND_URL, NODE_ENV, MONGO_URI } from "./utils/env";
 
-const app = express();
 
-// Middleware
-app.use(helmet());
-app.use(cors());
+let app:Application=express()
+
+const corsOptions = {
+    credentials: true,
+    origin: FRONTEND_URL,
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+};
+app.use(cookieParser());
+app.use(cors(corsOptions))
 app.use(express.json());
-app.use(rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-}));
+app.use(express.urlencoded({ extended: true }));
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI!, {
-  serverSelectionTimeoutMS: 5000,
-})
-  .then(() => console.log('MongoDB connected'))
-  .catch((err) => console.error('MongoDB connection error:', err));
 
-// Routes
-// app.use('/api/auth', authRoutes);
-// app.use('/api/users', userRoutes);
-
-// Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+app.use((req, res, next) => {
+    console.log(`LOGGING 📝 : ${req.method} request to: ${req.originalUrl}`);
+    next(); 
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.use('/user',userRoutes);
+app.use('/auth', authRoutes);
+
+app.get("/test", (req, res) => {
+  res.json({
+    env: NODE_ENV,
+    mongoUri: MONGO_URI,
+    frontend: FRONTEND_URL,
+  });
+});
+
+
+const start = async() => {
+    await connectDB()
+    app.listen(PORT, () => {
+        console.log(`SUCCESS: The ${NODE_ENV} server is listening on http://localhost:${PORT}`);
+    });
+};
+start()
