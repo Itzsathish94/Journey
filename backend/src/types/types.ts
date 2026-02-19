@@ -1,78 +1,30 @@
-import { Roles } from '../utils/enum';
-
-export interface InterviewerProfile {
-  username: string; 
-  profilePicUrl: string;
-}
-
-export interface InterviewerStatus {
-  isBlocked: boolean; 
-}
-
-export interface UserProfile {
-  username: string; 
-  profilePicUrl: string;
-}
-
-export interface UserStatus {
-  isBlocked: boolean; 
-}
-
-export interface InterviewerSignup {
-  name: string;
-  email: string;
-  password: string;
-  mobile: string;
-  totalExperience: number;
-  designation: string;
-  experienceCertificateURL?: string; 
-}
-
-export interface UserSignup {
-  name: string;
-  email: string;
-  password: string;
-  mobile?: string;
-}
-
-export interface otpGenerateI {
+export interface IOtpGenerate {
   createOtpDigit(length?: number): Promise<string>;
 }
 
+export type updateRequestType = {
+  username: string;
+  degreeCertificateUrl: string;
+  resumeUrl: string;
+  status: string;
+};
+
 export interface IEmail {
   sentEmailVerification(name: string, email: string, verification: string): Promise<boolean>;
+  sendForgotPasswordOTP(name: string, email: string, otp: string): Promise<boolean>;
 }
 
 export interface UserPayload {
-  _id: string;
+  id: string;
   email: string;
-  role: Roles;
-  isVerified: boolean;
+  role: string;
+  iat?: number;
+  exp?: number;
 }
 
-export interface IUserPayload {
-  _id: string;
-  email: string;
-  role: Roles;
-  isVerified: boolean;
-}
-
-export interface LoginInput {
+export interface SignupPayload {
   email: string;
   password: string;
-}
-
-export interface OTPSignupInput {
-  email: string;
-  otp: string;
-}
-
-export interface ForgotPasswordInput {
-  email: string;
-}
-
-export interface ResetPasswordInput {
-  email: string;
-  otp: string;
-  newPassword: string;
+  username: string;
+  role: string;
 }

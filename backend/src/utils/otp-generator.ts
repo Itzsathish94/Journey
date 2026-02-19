@@ -1,16 +1,18 @@
-import { otpGenerateI } from "../types/types";
+import { IOtpGenerate } from "../types/types";
 
-export class OtpGenerate implements otpGenerateI {
-  async createOtpDigit(): Promise<string> {
-    const digits = "0123456789";
-    let OTP = "";
-    const len = digits.length;
+export class OtpGenerate implements IOtpGenerate {
+  async createOtpDigit(length: number = 4): Promise<string> {
+    try {
+      const digits = "0123456789";
+      let OTP = "";
 
-    for (let i = 0; i < 4; i++) {
-      const randomIndex = Math.floor(Math.random() * len);
-      OTP += digits[randomIndex];
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * digits.length);
+        OTP += digits[randomIndex];
+      }
+      return OTP;
+    } catch (error) {
+      throw error;
     }
-    console.log(`OTP:===>${OTP}`);
-    return OTP;
   }
 }

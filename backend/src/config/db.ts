@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { MongoDB } from "../utils/constants/messages/messages";
+import { MongoDB } from "../utils/constants/messages";
 import { MONGO_URI } from "../utils/env";
 
 

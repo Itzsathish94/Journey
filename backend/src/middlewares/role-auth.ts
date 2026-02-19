@@ -1,58 +1,77 @@
-import { Request, Response, NextFunction } from 'express';
-import { Roles } from '../utils/enum';
-import { statusCode } from '../utils/constants/messages/status.code';
-import { AuthError } from '../utils/constants/messages/messages';
-import { UserPayload } from '../types/types';
-import { IUser } from '../models/user-model';
+import { JwtPayload } from "jsonwebtoken";
+import { Roles, StatusCode } from "../utils/enum";
+import { JwtService } from "@/services/common/jwt-service";
+import { Request, Response, NextFunction } from "express";
+import { AuthErrorMsg } from "../utils/constants/constants";
+import { appLogger } from "../utils/logger";
 
-interface AuthenticatedRequest extends Request {
-  user?: UserPayload | IUser;
-}
+const isValidPayload = (decoded: string | JwtPayload): decoded is JwtPayload =>
+  typeof decoded === "object" && decoded !== null;
 
-export const isUser = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+export const isUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = req.user as UserPayload;
-    if (!user) {
-      console.log('[RoleAuth] No user found in request');
-      res.status(statusCode.unauthorized).json({ message: AuthError.ACCESS_FORBIDDEN });
+    const token = req.cookies.accessToken;
+
+    if (!token) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
       return;
     }
 
-    if (user.role !== Roles.USER) {
-      console.log(`[RoleAuth] Access denied for role: ${user.role}, expected: ${Roles.USER}`);
-      res.status(statusCode.unauthorized).json({ message: AuthError.ACCESS_FORBIDDEN });
+    const jwtService = new JwtService();
+    const decoded = await jwtService.verifyToken(token);
+
+    if (!isValidPayload(decoded) || decoded.role !== Roles.USER) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
       return;
     }
-
-    console.log(`[RoleAuth] User role verified for email: ${user.email}`);
-    return next();
-  } catch (error: any) {
-    console.error(`[RoleAuth] Role verification error: ${error.message}`);
-    res.status(statusCode.internalServer).json({ message: 'Internal Server Error' });
-    return;
+    next();
+  } catch (error) {
+    appLogger.error("error in role Auth", error);
+    res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.INVALID_ACCESS_TOKEN);
   }
 };
 
-export const isAdmin = async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
+
+export const isInterviewer = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
   try {
-    const user = req.user as UserPayload;
-    if (!user) {
-      console.log('[RoleAuth] No user found in request');
-      res.status(statusCode.unauthorized).json({ message: AuthError.ACCESS_FORBIDDEN });
+    const token = req.cookies.accessToken;
+    if (!token) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
       return;
     }
 
-    if (user.role !== Roles.ADMIN) {
-      console.log(`[RoleAuth] Access denied for role: ${user.role}, expected: ${Roles.ADMIN}`);
-      res.status(statusCode.unauthorized).json({ message: AuthError.ACCESS_FORBIDDEN });
+    const jwtService = new JwtService();
+    const decoded = await jwtService.verifyToken(token);
+
+    if (!isValidPayload(decoded) || decoded.role !== Roles.INTERVIEWER) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
+      return;
+    }
+    next();
+  } catch (error) {
+    appLogger.error("error in interviewer role Auth", error);
+    res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.INVALID_ACCESS_TOKEN);
+  }
+};
+
+export const isAdmin = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+  try {
+    const token = req.cookies.accessToken;
+    if (!token) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
       return;
     }
 
-    console.log(`[RoleAuth] Admin role verified for email: ${user.email}`);
-    return next();
-  } catch (error: any) {
-    console.error(`[RoleAuth] Role verification error: ${error.message}`);
-    res.status(statusCode.internalServer).json({ message: 'Internal Server Error' });
-    return;
+    const jwtService = new JwtService();
+    const decoded = await jwtService.verifyToken(token);
+
+    if (!isValidPayload(decoded) || decoded.role !== Roles.ADMIN) {
+      res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.ACCESS_FORBIDDEN);
+      return;
+    }
+    next();
+  } catch (error) {
+    appLogger.error("error in admin role Auth", error);
+    res.status(StatusCode.UNAUTHORIZED).send(AuthErrorMsg.INVALID_ACCESS_TOKEN);
   }
 };
