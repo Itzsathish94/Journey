@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   adminController,
   adminVerificationController,
-  adminDomainController
+  adminDomainController,
+  adminSkillController
 } from "../config/dependency-injector/admin-dependency-injector";
 import authenticateToken from "../middlewares/authenticated-routes";
 
@@ -97,6 +98,42 @@ router.put(
   adminDomainController.updateDomain.bind(adminDomainController),
 );
 
+// skill routes
+
+router.post(
+  "/skill",
+  authenticateToken,
+  isAdmin,
+  adminSkillController.createSkill.bind(adminSkillController),
+);
+
+router.get(
+  "/skills",
+  authenticateToken,
+  isAdmin,
+  adminSkillController.getAllSkillsPaginated.bind(adminSkillController),
+);
+
+router.get(
+  "/skill/:skillId",
+  authenticateToken,
+  isAdmin,
+  adminSkillController.getSkillById.bind(adminSkillController),
+);
+
+router.put(
+  "/skillStatus/:skillId",
+  authenticateToken,
+  isAdmin,
+  adminSkillController.toggleActiveSkill.bind(adminSkillController),
+);
+
+router.put(
+  "/skill/:skillId",
+  authenticateToken,
+  isAdmin,
+  adminSkillController.updateSkill.bind(adminSkillController),
+);
 
 const adminRoutes = router;
 

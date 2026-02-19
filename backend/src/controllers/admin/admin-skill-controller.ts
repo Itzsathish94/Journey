@@ -1,4 +1,3 @@
-// src/controllers/admin/admin-skill-controller.ts
 import { Request, Response } from 'express';
 import { StatusCode } from '../../utils/enum';
 import { IAdminSkillService } from '../../services/admin/interfaces/IAdminSkillService';
@@ -6,7 +5,7 @@ import {
   SkillSuccessMsg,
   SkillErrorMsg,
   GeneralServerErrorMsg,
-} from '../../utils/constants'; // ← adjust names if different
+} from '../../utils/constants'; 
 import { appLogger } from '../../utils/logger';
 import { Types } from 'mongoose';
 import { IAdminSkillController } from './interfaces/IAdminSkillController';
@@ -20,32 +19,67 @@ export class AdminSkillController implements IAdminSkillController {
 
   async createSkill(req: Request, res: Response): Promise<void> {
     try {
-      // ... your code ...
+      const { skillName, domainId } = req.body;
+  
+      if (!skillName || typeof skillName !== 'string' || !skillName.trim()) {
+        res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: SkillErrorMsg.NAME_REQUIRED,
+        });
+        return;
+      }
+  
+      if (!domainId || !Types.ObjectId.isValid(domainId)) {
+        res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: SkillErrorMsg.INVALID_DOMAIN_ID,
+        });
+        return;
+      }
+  
+      const trimmedSkillName = skillName.trim().toLowerCase();
+  
+      // Check if skill already exists under this domain
+      const existing = await this._skillService.findSkillByName(trimmedSkillName, domainId);
+      if (existing) {
+        res.status(StatusCode.CONFLICT).json({
+          success: false,
+          message: SkillErrorMsg.SKILL_ALREADY_EXISTS,
+        });
+        return;
+      }
+  
+      const newSkill = await this._skillService.addSkill(trimmedSkillName, domainId);
+  
+      res.status(StatusCode.CREATED).json({
+        success: true,
+        message: SkillSuccessMsg.SKILL_CREATED,
+        data: newSkill,
+      });
     } catch (error: any) {
       appLogger.error('Create Skill error:', error);
   
       if (error.message?.includes('already exists')) {
         res.status(StatusCode.CONFLICT).json({
           success: false,
-          message: error.message, // or SkillErrorMsg.SKILL_ALREADY_EXISTS
+          message: error.message,
         });
-        return; // ← keep this return to exit early
+        return;
       }
   
       res.status(StatusCode.INTERNAL_SERVER_ERROR).json({
         success: false,
         message: GeneralServerErrorMsg.INTERNAL_SERVER_ERROR,
       });
-      // no return here — function ends naturally
     }
   }
 
   async updateSkill(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const { name, domainId } = req.body;
+      const { skillId } = req.params;
+      const { skillName, domainId } = req.body;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(skillId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: SkillErrorMsg.INVALID_ID,
@@ -53,7 +87,7 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      if (!name || typeof name !== 'string' || !name.trim()) {
+      if (!skillName || typeof skillName !== 'string' || !skillName.trim()) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: SkillErrorMsg.NAME_REQUIRED,
@@ -69,11 +103,11 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      const trimmedName = name.trim();
+      const trimmedSkillName = skillName.trim().toLowerCase();
 
-      const updated = await this._skillService.updateSkill(id, trimmedName, domainId);
+      const updatedSkill = await this._skillService.updateSkill(skillId, trimmedSkillName, domainId);
 
-      if (!updated) {
+      if (!updatedSkill) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: SkillErrorMsg.SKILL_NOT_FOUND,
@@ -84,7 +118,7 @@ export class AdminSkillController implements IAdminSkillController {
       res.status(StatusCode.OK).json({
         success: true,
         message: SkillSuccessMsg.SKILL_UPDATED,
-        data: updated,
+        data: updatedSkill,
       });
     } catch (error: any) {
       appLogger.error('Update Skill error:', error);
@@ -96,11 +130,11 @@ export class AdminSkillController implements IAdminSkillController {
     }
   }
 
-  async toggleActive(req: Request, res: Response): Promise<void> {
+  async toggleActiveSkill(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const { skillId } = req.params;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(skillId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: SkillErrorMsg.INVALID_ID,
@@ -108,9 +142,9 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      const updated = await this._skillService.toggleActiveSkill(id);
+      const updatedSkill = await this._skillService.toggleActiveSkill(skillId);
 
-      if (!updated) {
+      if (!updatedSkill) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: SkillErrorMsg.SKILL_NOT_FOUND,
@@ -118,14 +152,14 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      const message = updated.isActive
-        ? SkillSuccessMsg.SKILL__LISTED
-        : SkillSuccessMsg.SKILL__UNLISTED;
+      const message = updatedSkill.isActive
+        ? SkillSuccessMsg.SKILL__ACTIVE
+        : SkillSuccessMsg.SKILL__INACTIVE;
 
       res.status(StatusCode.OK).json({
         success: true,
         message,
-        data: updated,
+        data: updatedSkill,
       });
     } catch (error: unknown) {
       appLogger.error('Toggle Skill active error:', error);
@@ -136,7 +170,7 @@ export class AdminSkillController implements IAdminSkillController {
     }
   }
 
-  async getAllPaginated(req: Request, res: Response): Promise<void> {
+  async getAllSkillsPaginated(req: Request, res: Response): Promise<void> {
     try {
       let page = Number(req.query.page);
       let limit = Number(req.query.limit);
@@ -173,11 +207,11 @@ export class AdminSkillController implements IAdminSkillController {
     }
   }
 
-  async getById(req: Request, res: Response): Promise<void> {
+  async getSkillById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const { skillId } = req.params;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(skillId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: SkillErrorMsg.INVALID_ID,
@@ -185,7 +219,7 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      const skill = await this._skillService.findSkillById(id);
+      const skill = await this._skillService.findSkillById(skillId);
 
       if (!skill) {
         res.status(StatusCode.NOT_FOUND).json({

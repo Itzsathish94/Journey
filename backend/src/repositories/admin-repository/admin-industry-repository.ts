@@ -1,10 +1,10 @@
 // src/repositories/admin-repository/admin-industry-repository.ts
-import IndustryModel, { IIndustry } from "../../models/category/industry-model";
+import IndustryModel, { IIndustryModel } from "../../models/category/industry-model";
 import { GenericRepository } from "../generic-repository";
 import { IAdminIndustryRepository } from "./interfaces/IAdminIndustryRepository";
 
 export class AdminIndustryRepository
-  extends GenericRepository<IIndustry>
+  extends GenericRepository<IIndustryModel>
   implements IAdminIndustryRepository
 {
   constructor() {
@@ -15,7 +15,7 @@ export class AdminIndustryRepository
     page: number,
     limit: number,
     search: string = ""
-  ): Promise<{ data: IIndustry[]; total: number }> {
+  ): Promise<{ data: IIndustryModel[]; total: number }> {
     const filter = search
       ? { name: { $regex: new RegExp(search, "i") } }
       : {};
@@ -23,18 +23,18 @@ export class AdminIndustryRepository
     return await this.paginate(filter, page, limit, { name: 1 });
   }
 
-  async findIndustryByName(name: string): Promise<IIndustry | null> {
+  async findIndustryByName(industryName: string): Promise<IIndustryModel | null> {
     return this.findOne({
-      name: { $regex: new RegExp(`^${name}$`, "i") },
+      industryName: { $regex: new RegExp(`^${industryName}$`, "i") },
     });
   }
 
-  async toggleActive(id: string): Promise<IIndustry | null> {
-    const industry = await this.findById(id);
+  async toggleActive(industryId: string): Promise<IIndustryModel | null> {
+    const industry = await this.findById(industryId);
     if (!industry) {
       throw new Error("Industry not found");
     }
 
-    return this.update(id, { isActive: !industry.isActive });
+    return this.update(industryId, { isActive: !industry.isActive });
   }
 }

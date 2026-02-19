@@ -1,10 +1,10 @@
 // src/repositories/admin-repository/admin-skill-repository.ts
-import SkillModel, { ISkill, ISkillPopulated } from "../../models/category/skill-model";
+import SkillModel, { ISkillModel, ISkillPopulated } from "../../models/category/skill-model";
 import { GenericRepository } from "../generic-repository";
 import { IAdminSkillRepository } from "./interfaces/IAdminSkillRepository";
 
 export class AdminSkillRepository
-  extends GenericRepository<ISkill>
+  extends GenericRepository<ISkillModel>
   implements IAdminSkillRepository
 {
   constructor() {
@@ -20,7 +20,7 @@ export class AdminSkillRepository
     const filter: any = {};
     
     if (search) {
-      filter.name = { $regex: new RegExp(search, "i") };
+      filter.skillName = { $regex: new RegExp(search, "i") };
     }
     
     if (domainId) {
@@ -32,7 +32,7 @@ export class AdminSkillRepository
     const [data, total] = await Promise.all([
       SkillModel.find(filter)
         .populate("domainId", "name")
-        .sort({ name: 1 })
+        .sort({ skillName: 1 })
         .skip(skip)
         .limit(limit)
         .lean<ISkillPopulated[]>(),  // ✅ Clean type assertion
@@ -45,23 +45,23 @@ export class AdminSkillRepository
   async getSkillsByDomainId(domainId: string): Promise<ISkillPopulated[]> {
     return await SkillModel.find({ domainId })
       .populate("domainId", "name")
-      .sort({ name: 1 })
+      .sort({ skillName: 1 })
       .lean<ISkillPopulated[]>();  // ✅ Uses your existing interface
   }
 
-  async findSkillByName(name: string, domainId: string): Promise<ISkill | null> {
+  async findSkillByName(skillName: string, domainId: string): Promise<ISkillModel | null> {
     return this.findOne({
-      name: { $regex: new RegExp(`^${name}$`, "i") },
+      skillName: { $regex: new RegExp(`^${skillName}$`, "i") },
       domainId,
     });
   }
 
-  async toggleActive(id: string): Promise<ISkill | null> {
-    const skill = await this.findById(id);
+  async toggleActive(skillId: string): Promise<ISkillModel | null> {
+    const skill = await this.findById(skillId);
     if (!skill) {
       throw new Error("Skill not found");
     }
 
-    return this.update(id, { isActive: !skill.isActive });
+    return this.update(skillId, { isActive: !skill.isActive });
   }
 }

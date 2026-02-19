@@ -15,17 +15,17 @@ export interface IAdminSkillController {
   /**
    * Toggle active/inactive status of a skill
    */
-  toggleActive(req: Request, res: Response): Promise<void>;
+  toggleActiveSkill(req: Request, res: Response): Promise<void>;
 
   /**
    * Get paginated list of skills (with optional search and domain filter)
    */
-  getAllPaginated(req: Request, res: Response): Promise<void>;
+  getAllSkillsPaginated(req: Request, res: Response): Promise<void>;
 
   /**
    * Get a single skill by ID (with populated domain if needed)
    */
-  getById(req: Request, res: Response): Promise<void>;
+  getSkillById(req: Request, res: Response): Promise<void>;
 
   /**
    * Optional: Delete a skill (if you implement soft/hard delete)

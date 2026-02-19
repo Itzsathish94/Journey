@@ -1,7 +1,7 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
-
+import mongoose, { Schema, Document } from "mongoose";
+import { Types } from 'mongoose';
 export interface IDomainModel extends Document {
-  _id: ObjectId;
+  _id: Types.ObjectId;
   domainName: string;
   isActive: boolean;
   createdAt: Date;

@@ -28,6 +28,13 @@ import { AdminDomainService } from "@/services/admin/admin-domain-service";
 import { IAdminDomainController } from "@/controllers/admin/interfaces/IAdminDomainController";
 import { AdminDomainController } from "@/controllers/admin/admin-domain-controller";
 
+import { IAdminSkillRepository } from "@/repositories/admin-repository/interfaces/IAdminSkillRepository";
+import { AdminSkillRepository } from "@/repositories/admin-repository/admin-skill-repository";
+import { IAdminSkillService } from "@/services/admin/interfaces/IAdminSkillService";
+import { AdminSkillService } from "@/services/admin/admin-skill-service";
+import { IAdminSkillController } from "@/controllers/admin/interfaces/IAdminSkillController";
+import { AdminSkillController } from "@/controllers/admin/admin-skill-controller";
+
 import { IJwtService } from "@/services/common/interfaces/IJWTService";
 import { JwtService } from "@/services/common/jwt-service";
 import { IHashService } from "@/services/common/interfaces/IHashService";
@@ -65,8 +72,14 @@ const adminDomainRepository : IAdminDomainRepository = new AdminDomainRepository
 const adminDomainServie : IAdminDomainService= new AdminDomainService(adminDomainRepository);
 const adminDomainController : IAdminDomainController = new AdminDomainController(adminDomainServie);
 
+//skill
+const adminSkillRepository : IAdminSkillRepository = new AdminSkillRepository();
+const adminSkillServie : IAdminSkillService= new AdminSkillService(adminSkillRepository);
+const adminSkillController : IAdminSkillController = new AdminSkillController(adminSkillServie);
+
 export {
   adminController,
   adminVerificationController,
-  adminDomainController
+  adminDomainController,
+  adminSkillController
 };

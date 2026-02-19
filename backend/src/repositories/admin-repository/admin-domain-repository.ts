@@ -19,7 +19,7 @@ export class AdminDomainRepository
       ? { domainName: { $regex: new RegExp(search, "i") } }
       : {};
 
-    return await this.paginate(filter, page, limit, { name: 1 });
+    return await this.paginate(filter, page, limit, { domainName: 1 });
   }
 
   async findDomainByName(domainName: string): Promise<IDomainModel | null> {

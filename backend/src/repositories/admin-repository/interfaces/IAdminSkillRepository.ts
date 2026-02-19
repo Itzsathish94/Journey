@@ -1,10 +1,10 @@
 // src/repositories/admin-repository/interfaces/IAdminSkillRepository.ts
-import { ISkill, ISkillPopulated } from "../../../models/category/skill-model";
+import { ISkillModel, ISkillPopulated } from "../../../models/category/skill-model";
 import { IGenericRepository } from "../../generic-repository";
 
-export interface IAdminSkillRepository extends IGenericRepository<ISkill> {
-  findSkillByName(name: string, domainId: string): Promise<ISkill | null>;
-  toggleActive(id: string): Promise<ISkill | null>;
+export interface IAdminSkillRepository extends IGenericRepository<ISkillModel> {
+  findSkillByName(name: string, domainId: string): Promise<ISkillModel | null>;
+  toggleActive(skillId: string): Promise<ISkillModel | null>;
   getAllSkillsPaginated(
     page: number,
     limit: number,

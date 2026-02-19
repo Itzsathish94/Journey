@@ -561,8 +561,8 @@ export const JwtConfig = {
     SKILL_FETCHED: "Skill fetched successfully!",
     SKILLS_FETCHED: "Fetched skills successfully!",
     SKILL__FOUND: "Skill found successfully!",
-    SKILL__LISTED: "Skill listed successfully!",
-    SKILL__UNLISTED: "Skill unlisted successfully!",
+    SKILL__ACTIVE: "Skill activated successfully!",
+    SKILL__INACTIVE: "Skill inactivated successfully!",
   };
   
   export const SkillErrorMsg = {

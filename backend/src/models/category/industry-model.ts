@@ -1,18 +1,18 @@
 // src/models/category/industry-model.ts
 import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import {Types} from 'mongoose';
 
-export interface IIndustry extends Document {
-  _id: ObjectId;
-  name: string;
-  description?: string;
+export interface IIndustryModel extends Document {
+  _id:  Types.ObjectId;
+  industryName: string;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const IndustrySchema: Schema<IIndustry> = new Schema(
+const IndustrySchema: Schema<IIndustryModel> = new Schema(
     {
-      name: {
+      industryName: {
         type: String,
         required: true,
         unique: true,
@@ -26,5 +26,5 @@ const IndustrySchema: Schema<IIndustry> = new Schema(
     { timestamps: true }
   );
 
-const IndustryModel = mongoose.model<IIndustry>("Industry", IndustrySchema);
+const IndustryModel = mongoose.model<IIndustryModel>("Industry", IndustrySchema);
 export default IndustryModel;
