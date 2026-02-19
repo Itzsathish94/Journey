@@ -1,12 +1,16 @@
 // src/services/admin/interfaces/IAdminIndustryService.ts
-import { IIndustry } from "../../../models/category/industry-model";
+import { IIndustryModel } from "../../../models/category/industry-model";
 
 export interface IAdminIndustryService {
-  findIndustryByName(name: string): Promise<IIndustry | null>;
-  findIndustryById(id: string): Promise<IIndustry | null>;
-  addIndustry(name: string): Promise<IIndustry>;
-  updateIndustry(id: string, name: string): Promise<IIndustry | null>;
-  getAllIndustries(page: number, limit: number, search?: string): Promise<{ data: IIndustry[]; total: number }>;
-  toggleActiveIndustry(id: string): Promise<IIndustry | null>;
-  deleteIndustry(id: string): Promise<boolean>;
+  findIndustryByName(industryName: string): Promise<IIndustryModel | null>;
+  findIndustryById(industryId: string): Promise<IIndustryModel | null>;
+  addIndustry(industryName: string): Promise<IIndustryModel>;
+  updateIndustry(industryId: string, name: string): Promise<IIndustryModel | null>;
+  getAllIndustriesPaginated(  
+    page: number,
+    limit: number,
+    search?: string
+  ): Promise<{ data: IIndustryModel[]; total: number }>;
+  toggleActiveIndustry(industryId: string): Promise<IIndustryModel | null>;
+  deleteIndustry(industryId: string): Promise<boolean>;
 }

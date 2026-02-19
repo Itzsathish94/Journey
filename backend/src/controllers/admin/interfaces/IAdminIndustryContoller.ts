@@ -15,15 +15,15 @@ export interface IAdminIndustryController {
   /**
    * Toggle active/inactive (list/unlist) status of an industry
    */
-  toggleActive(req: Request, res: Response): Promise<void>;
+  toggleActiveIndustry(req: Request, res: Response): Promise<void>;
 
   /**
    * Get paginated list of industries (with optional search)
    */
-  getAllPaginated(req: Request, res: Response): Promise<void>;
+  getAllIndustriesPaginated(req: Request, res: Response): Promise<void>;
 
   /**
    * Get a single industry by ID
    */
-  getById(req: Request, res: Response): Promise<void>;
+  getIndustryById(req: Request, res: Response): Promise<void>;
 }

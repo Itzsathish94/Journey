@@ -585,8 +585,8 @@ export const JwtConfig = {
     INDUSTRY_FETCHED: "Fetched indutry successfully!",
     INDUSTRIES_FETCHED: "Fetched indutry successfully!",
     INDUSTRY__FOUND: "Industry found successfully!",
-    INDUSTRY__LISTED: "Industry listed successfully!",
-    INDUSTRY__UNLISTED: "Industry unlisted successfully!",
+    INDUSTRY__ACTIVE: "Industry activated successfully!",
+    INDUSTRY__INACTIVE: "Industry inactivated successfully!",
   };
   
   export const IndustryErrorMsg = {

@@ -17,10 +17,10 @@ export class AdminIndustryRepository
     search: string = ""
   ): Promise<{ data: IIndustryModel[]; total: number }> {
     const filter = search
-      ? { name: { $regex: new RegExp(search, "i") } }
+      ? { industryName: { $regex: new RegExp(search, "i") } }
       : {};
 
-    return await this.paginate(filter, page, limit, { name: 1 });
+    return await this.paginate(filter, page, limit, { industryName: 1 });
   }
 
   async findIndustryByName(industryName: string): Promise<IIndustryModel | null> {

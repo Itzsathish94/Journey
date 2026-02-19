@@ -35,6 +35,13 @@ import { AdminSkillService } from "@/services/admin/admin-skill-service";
 import { IAdminSkillController } from "@/controllers/admin/interfaces/IAdminSkillController";
 import { AdminSkillController } from "@/controllers/admin/admin-skill-controller";
 
+import { IAdminIndustryRepository } from "@/repositories/admin-repository/interfaces/IAdminIndustryRepository";
+import { AdminIndustryRepository } from "@/repositories/admin-repository/admin-industry-repository";
+import { IAdminIndustryService } from "@/services/admin/interfaces/IAdminIndustryService";
+import { AdminIndustryService } from "@/services/admin/admin-industry-service";
+import { IAdminIndustryController } from "@/controllers/admin/interfaces/IAdminIndustryContoller";
+import { AdminIndustryController } from "@/controllers/admin/admin-industry-controller";
+
 import { IJwtService } from "@/services/common/interfaces/IJWTService";
 import { JwtService } from "@/services/common/jwt-service";
 import { IHashService } from "@/services/common/interfaces/IHashService";
@@ -77,9 +84,15 @@ const adminSkillRepository : IAdminSkillRepository = new AdminSkillRepository();
 const adminSkillServie : IAdminSkillService= new AdminSkillService(adminSkillRepository);
 const adminSkillController : IAdminSkillController = new AdminSkillController(adminSkillServie);
 
+//industry
+const adminIndustryRepository : IAdminIndustryRepository = new AdminIndustryRepository();
+const adminIndustryService : IAdminIndustryService= new AdminIndustryService(adminIndustryRepository);
+const adminIndustryController : IAdminIndustryController = new AdminIndustryController(adminIndustryService);
+
 export {
   adminController,
   adminVerificationController,
   adminDomainController,
-  adminSkillController
+  adminSkillController,
+  adminIndustryController
 };

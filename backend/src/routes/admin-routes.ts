@@ -3,7 +3,8 @@ import {
   adminController,
   adminVerificationController,
   adminDomainController,
-  adminSkillController
+  adminSkillController,
+  adminIndustryController
 } from "../config/dependency-injector/admin-dependency-injector";
 import authenticateToken from "../middlewares/authenticated-routes";
 
@@ -135,6 +136,42 @@ router.put(
   adminSkillController.updateSkill.bind(adminSkillController),
 );
 
+// industry routes
+
+router.post(
+  "/industry",
+  authenticateToken,
+  isAdmin,
+  adminIndustryController.createIndustry.bind(adminIndustryController),
+);
+
+router.get(
+  "/industries",
+  authenticateToken,
+  isAdmin,
+  adminIndustryController.getAllIndustriesPaginated.bind(adminIndustryController),
+);
+
+router.get(
+  "/industry/:industryId",
+  authenticateToken,
+  isAdmin,
+  adminIndustryController.getIndustryById.bind(adminIndustryController),
+);
+
+router.put(
+  "/industryStatus/:industryId",
+  authenticateToken,
+  isAdmin,
+  adminIndustryController.toggleActiveIndustry.bind(adminIndustryController),
+);
+
+router.put(
+  "/industry/:industryId",
+  authenticateToken,
+  isAdmin,
+  adminIndustryController.updateIndustry.bind(adminIndustryController),
+);
 const adminRoutes = router;
 
 export default adminRoutes;

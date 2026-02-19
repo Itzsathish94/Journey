@@ -20,9 +20,9 @@ export class AdminIndustryController implements IAdminIndustryController {
 
   async createIndustry(req: Request, res: Response): Promise<void> {
     try {
-      const { name } = req.body;
+      const { industryName } = req.body;
 
-      if (!name || typeof name !== 'string' || !name.trim()) {
+      if (!industryName || typeof industryName !== 'string' || !industryName.trim()) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: IndustryErrorMsg.NAME_REQUIRED,
@@ -30,10 +30,10 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const trimmedName = name.trim();
+      const trimmedIndustryName = industryName.trim().toLowerCase();
 
-      const existing = await this._industryService.findIndustryByName(trimmedName);
-      if (existing) {
+      const existingIndustry = await this._industryService.findIndustryByName(trimmedIndustryName);
+      if (existingIndustry) {
         res.status(StatusCode.CONFLICT).json({
           success: false,
           message: IndustryErrorMsg.INDUSTRY_ALREADY_EXISTS,
@@ -41,12 +41,12 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const created = await this._industryService.addIndustry(trimmedName);
+      const createdIndustry = await this._industryService.addIndustry(trimmedIndustryName);
 
       res.status(StatusCode.CREATED).json({
         success: true,
         message: IndustrySuccessMsg.INDUSTRY_CREATED,
-        data: created,
+        data: createdIndustry,
       });
     } catch (error: unknown) {
       appLogger.error('Create Industry error:', error);
@@ -59,10 +59,10 @@ export class AdminIndustryController implements IAdminIndustryController {
 
   async updateIndustry(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
-      const { name } = req.body;
+      const { industryId } = req.params;
+      const { industryName } = req.body;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(industryId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: IndustryErrorMsg.INVALID_ID,
@@ -70,7 +70,7 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      if (!name || typeof name !== 'string' || !name.trim()) {
+      if (!industryName || typeof industryName !== 'string' || !industryName.trim()) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: IndustryErrorMsg.NAME_REQUIRED,
@@ -78,10 +78,10 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const trimmedName = name.trim();
+      const trimmedIndustryName = industryName.trim().toLowerCase();
 
-      const existing = await this._industryService.findIndustryByName(trimmedName);
-      if (existing && existing._id.toString() !== id) {
+      const existingIndustry = await this._industryService.findIndustryByName(trimmedIndustryName);
+      if (existingIndustry && existingIndustry._id.toString() !== industryId) {
         res.status(StatusCode.CONFLICT).json({
           success: false,
           message: IndustryErrorMsg.INDUSTRY_ALREADY_EXISTS,
@@ -89,9 +89,9 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const updated = await this._industryService.updateIndustry(id, trimmedName);
+      const updatedIndustry = await this._industryService.updateIndustry(industryId, trimmedIndustryName);
 
-      if (!updated) {
+      if (!updatedIndustry) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: IndustryErrorMsg.INDUSTRY_NOT_FOUND,
@@ -102,7 +102,7 @@ export class AdminIndustryController implements IAdminIndustryController {
       res.status(StatusCode.OK).json({
         success: true,
         message: IndustrySuccessMsg.INDUSTRY_UPDATED,
-        data: updated,
+        data: updatedIndustry,
       });
     } catch (error: unknown) {
       appLogger.error('Update Industry error:', error);
@@ -113,11 +113,11 @@ export class AdminIndustryController implements IAdminIndustryController {
     }
   }
 
-  async toggleActive(req: Request, res: Response): Promise<void> {
+  async toggleActiveIndustry(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const { industryId } = req.params;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(industryId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: IndustryErrorMsg.INVALID_ID,
@@ -125,9 +125,9 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const updated = await this._industryService.toggleActiveIndustry(id);
+      const updatedIndustry = await this._industryService.toggleActiveIndustry(industryId);
 
-      if (!updated) {
+      if (!updatedIndustry) {
         res.status(StatusCode.NOT_FOUND).json({
           success: false,
           message: IndustryErrorMsg.INDUSTRY_NOT_FOUND,
@@ -135,14 +135,14 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const message = updated.isActive
-        ? IndustrySuccessMsg.INDUSTRY__LISTED
-        : IndustrySuccessMsg.INDUSTRY__UNLISTED;
+      const message = updatedIndustry.isActive
+        ? IndustrySuccessMsg.INDUSTRY__ACTIVE
+        : IndustrySuccessMsg.INDUSTRY__INACTIVE;
 
       res.status(StatusCode.OK).json({
         success: true,
         message,
-        data: updated,
+        data: updatedIndustry,
       });
     } catch (error: unknown) {
       appLogger.error('Toggle Industry active error:', error);
@@ -153,7 +153,7 @@ export class AdminIndustryController implements IAdminIndustryController {
     }
   }
 
-  async getAllPaginated(req: Request, res: Response): Promise<void> {
+  async getAllIndustriesPaginated(req: Request, res: Response): Promise<void> {
     try {
       let page = Number(req.query.page);
       let limit = Number(req.query.limit);
@@ -162,7 +162,7 @@ export class AdminIndustryController implements IAdminIndustryController {
       if (isNaN(page) || page < 1) page = 1;
       if (isNaN(limit) || limit < 1) limit = 10;
 
-      const result = await this._industryService.getAllIndustries(page, limit, search);
+      const result = await this._industryService.getAllIndustriesPaginated(page, limit, search);
 
       res.status(StatusCode.OK).json({
         success: true,
@@ -181,11 +181,11 @@ export class AdminIndustryController implements IAdminIndustryController {
     }
   }
 
-  async getById(req: Request, res: Response): Promise<void> {
+  async getIndustryById(req: Request, res: Response): Promise<void> {
     try {
-      const { id } = req.params;
+      const { industryId } = req.params;
 
-      if (!Types.ObjectId.isValid(id)) {
+      if (!Types.ObjectId.isValid(industryId)) {
         res.status(StatusCode.BAD_REQUEST).json({
           success: false,
           message: IndustryErrorMsg.INVALID_ID,
@@ -193,7 +193,7 @@ export class AdminIndustryController implements IAdminIndustryController {
         return;
       }
 
-      const industry = await this._industryService.findIndustryById(id);
+      const industry = await this._industryService.findIndustryById(industryId);
 
       if (!industry) {
         res.status(StatusCode.NOT_FOUND).json({
