@@ -5,7 +5,7 @@ import {
   AdminErrorMessages,
   AdminSuccessMessages,
   ResponseError,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import { IEmail } from "../../types/email";
 import { BadRequestError, NotFoundError } from "../../utils/error";
 import { appLogger } from "../../utils/logger";

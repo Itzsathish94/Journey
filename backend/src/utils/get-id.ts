@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import { Request } from "express";
-import { AuthErrorMsg } from "./constants/constants";
+import { AuthErrorMsg } from "./constants";
 import { appLogger } from "./logger";
 import { UserPayload } from "../types/types";
 

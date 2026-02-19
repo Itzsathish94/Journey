@@ -1,7 +1,7 @@
 import { IInterviewerVerificationService } from "./interfaces/IInterviewerVerificationService";
 import { IVerificationModel } from "../../models/verification-model";
 import { IInterviewerVerificationRepository } from "../../repositories/interviewer-repository/interfaces/IInterviewerVerificationRepository";
-import { VerificationErrorMessages } from "../../utils/constants/constants";
+import { VerificationErrorMessages } from "../../utils/constants";
 
 export class InterviewerVerificationService
   implements IInterviewerVerificationService

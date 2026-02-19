@@ -18,27 +18,6 @@ export interface IEmail {
     email: string,
   ): Promise<SentMessageInfo>;
 
-  sendMembershipPurchaseEmail(
-    name: string,
-    email: string,
-    planName: string,
-    expiryDate: Date,
-  ): Promise<SentMessageInfo>;
-
-  sendMembershipExpiryReminder(
-    name: string,
-    email: string,
-    expiryDate: Date,
-  ): Promise<SentMessageInfo>;
-
-  sendSlotBookingConfirmation(
-    name: string,
-    email: string,
-    InterviewerName: string,
-    date: string,
-    startTime: string,
-    endTime: string,
-  ): Promise<SentMessageInfo>;
 }
 
 export interface IForgotEmail {

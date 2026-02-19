@@ -4,7 +4,7 @@ import IInterviewerController from "./interfaces/IInterviewerController";
 import IInterviewerService from "../../services/interviewers/interfaces/IInterviewerService";
 import IOtpServices from "../../services/common/interfaces/IOTPService";
 import { Roles, StatusCode } from "../../utils/enum";
-import { INTERVIEWER_MESSAGES, SERVER_ERROR } from "../../utils/constants/constants";
+import { INTERVIEWER_MESSAGES, SERVER_ERROR } from "../../utils/constants";
 import { IJwtService } from "../../services/common/interfaces/IJWTService";
 import { IEmail } from "../../types/email";
 import { IOtpGenerate } from "../../types/types";

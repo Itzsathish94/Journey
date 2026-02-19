@@ -4,7 +4,7 @@ import InterviewerModel, {
   } from "../../models/interviewer-model";
   import { GenericRepository } from "../generic-repository";
   import IInterviewerRepository from "./interfaces/IInterviewerRepository";
-  import { InterviewerErrorMessages } from "../../utils/constants/constants";
+  import { InterviewerErrorMessages } from "../../utils/constants";
   import bcrypt from "bcryptjs";
   export default class InterviewerRepository
     extends GenericRepository<IInterviewer>

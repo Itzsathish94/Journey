@@ -2,7 +2,7 @@ import { IVerificationModel } from "../../models/verification-model";
 import { GenericRepository } from "../generic-repository";
 import VerificationModel from "../../models/verification-model";
 import { IAdminVerificationRepository } from "./interfaces/IAdminVerification";
-import { InterviewerErrorMessages } from "../../utils/constants/constants";
+import { InterviewerErrorMessages } from "../../utils/constants";
 import { NotFoundError, InternalServerError } from "../../utils/error";
 import type { SortOrder } from "mongoose";
 import { appLogger } from "../../utils/logger";

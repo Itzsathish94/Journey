@@ -2,7 +2,7 @@ import { JwtPayload } from "jsonwebtoken";
 import { Roles, StatusCode } from "../utils/enum";
 import { JwtService } from "@/services/common/jwt-service";
 import { Request, Response, NextFunction } from "express";
-import { AuthErrorMsg } from "../utils/constants/constants";
+import { AuthErrorMsg } from "../utils/constants";
 import { appLogger } from "../utils/logger";
 
 const isValidPayload = (decoded: string | JwtPayload): decoded is JwtPayload =>

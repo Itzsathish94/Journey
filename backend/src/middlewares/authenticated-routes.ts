@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
 import { JwtService } from "@/services/common/jwt-service";
-import { AuthErrorMsg } from "../utils/constants/constants";
+import { AuthErrorMsg } from "../utils/constants";
 import { StatusCode } from "../utils/enum";
 import dotenv from "dotenv";
 import { appLogger } from "../utils/logger";

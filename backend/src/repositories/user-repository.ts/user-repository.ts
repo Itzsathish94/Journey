@@ -1,4 +1,4 @@
-import { UserErrorMessages } from "../../utils/constants/constants";
+import { UserErrorMessages } from "../../utils/constants";
 import UserModel, { IUser, IUserDTO } from "../../models/user-model";
 import { GenericRepository } from "../generic-repository";
 import { IUserRepository } from "../user-repository.ts/interfaces/IUserRepository";

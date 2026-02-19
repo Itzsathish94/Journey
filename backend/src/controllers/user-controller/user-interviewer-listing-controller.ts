@@ -2,7 +2,7 @@ import { IUserInterviewerListingController } from "./interfaces/IUserInterviewer
 import { IUserInterviewerListingService } from "../../services/user/interfaces/IUserInterviewerListingService";
 import { Request, Response } from "express";
 import { StatusCode } from "../../utils/enum";
-import { UserErrorMessages } from "../../utils/constants/constants";
+import { UserErrorMessages } from "../../utils/constants";
 import { appLogger } from "../../utils/logger";
 
 export class UserInterviewerListingController

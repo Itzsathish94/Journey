@@ -2,7 +2,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 import { IJwtService } from './interfaces/IJWTService';
 import { UserPayload, SignupPayload } from '../../types/types';
-import { EnvError, JwtError } from '../../utils/constants/messages';
+import { EnvError, JwtError } from '../../utils/constants';
 
 interface DecodedPayload extends UserPayload {
   exp?: number;

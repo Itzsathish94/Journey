@@ -1,5 +1,5 @@
 import AWS from "aws-sdk";
-import { S3BucketErrors } from "./constants/constants";
+import { S3BucketErrors } from "./constants";
 
 export interface IMulterFile {
   originalname: string;

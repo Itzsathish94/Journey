@@ -6,7 +6,7 @@ import {
   SERVER_ERROR,
   UserErrorMessages,
   MESSAGES,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import { Roles, StatusCode } from "../../utils/enum";
 import IOtpServices from "../../services/common/interfaces/IOTPService";
 import { IOtpGenerate } from "../../types/types";

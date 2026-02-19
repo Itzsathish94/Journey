@@ -7,7 +7,7 @@ import {
   AdminErrorMessages,
   AdminSuccessMessages,
   ResponseError,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import { IJwtService } from "../../services/common/interfaces/IJWTService";
 import { appLogger } from "../../utils/logger";
 import { IHashService } from "../../services/common/interfaces/IHashService";

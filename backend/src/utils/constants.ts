@@ -10,7 +10,7 @@ export const JwtConfig = {
     TITLE_VALIDATION: "Title must be a string between 3 and 100 characters",
     DESCRIPTION_VALIDATION:
       "Description must be a string between 10 and 1000 characters",
-    INVALID_CATEGORY_ID: "Invalid category ID",
+    INVALID_DOMAIN__ID: "Invalid DOMAIN_ ID",
     INVALID_FORMAT: "Invalid items format",
     ITEMS_VALIDATION: "Items must be a non-empty array",
     COURSEID_ORDER_VALIDATION:
@@ -143,7 +143,7 @@ export const JwtConfig = {
     ADMINSIDE_COURSE_NOTFOUND: "Course not found",
     ADMIN_COURSE_UNLIST: "Course unlisted successfully",
     ADMIN_COURSE_NOTVERIFIED: "Course unverified and unlisted",
-    ADMIN_CATEGORY_FETCHEDERROR: "Something went wrong while fetching categories",
+    ADMIN_DOMAIN__FETCHEDERROR: "Something went wrong while fetching categories",
     ADMIN_DASHBOARD_FILTER_ERROR: "Invalid type parameter",
     ADMIN_PAGENO_INVALID: "Invalid page number",
     ADMIN_PAGENOLIMIT_INVALID: "Invalid limit number",
@@ -446,16 +446,16 @@ export const JwtConfig = {
     UNEXPECTED_ERROR: "An unexpected error occurred!",
   };
   
-  export const JwtErrorMsg = {
+  export const JwtError = {
     JWT_NOT_FOUND: "JWT not found in the cookies",
     INVALID_JWT: "Invalid JWT",
     JWT_EXPIRATION: "2h" as const,
     JWT_REFRESH_EXPIRATION: "6h" as const,
   };
   
-  export const EnvErrorMsg = {
+  export const EnvError = {
     CONST_ENV: "",
-    JWT_NOT_FOUND: "JWT secret not found in the env",
+    JWT_SECRET_NOT_FOUND: "JWT secret not found in the env",
     NOT_FOUND: "Env not found",
     ADMIN_NOT_FOUND: "Environment variables for admin credentials not found",
   };
@@ -533,27 +533,75 @@ export const JwtConfig = {
     DOCUMENTS_UPLOADED: "Documents uploaded successfully.",
   };
   
-  export const CategorySuccessMsg = {
-    CATEGORY_ADDED: "Category added successfully!",
-    CATEGORY_UPDATED: "Category updated successfully!",
-    CATEGORY_FETCHED: "Fetched categories successfully!",
-  
-    CATEGORY_FOUND: "Category found successfully!",
-    CATEGORY_LISTED: "Category listed successfully!",
-    CATEGORY_UNLISTED: "Category unlisted successfully!",
+  export const DomainSuccessMsg = {
+    DOMAIN_CREATED: "Domain created successfully!",
+    DOMAIN_UPDATED: "Domain updated successfully!",
+    DOMAINS_FETCHED: "Fetched domains successfully!",
+    DOMAIN__FOUND: "Domain found successfully!",
+    DOMAIN__ACTIVATED: "Domain activated successfully!",
+    DOMAIN__INACTIVATED: "Domain inactivated successfully!",
   };
   
-  export const CategoryErrorMsg = {
-    CATEGORY_EXISTS: "Category already exists!",
-    CATEGORY_NOT_UPDATED: "Category not updated!",
-    CATEGORY_FAILED_TO_FETCH: "Failed to fetch categories",
-    CATEGORY_NOT_FOUND: "Category not found!",
-    CATEGORY_NOT_CREATED: "Could not create category!",
-    CATEGORY_NOT_FETCHED: "Could not fetch categories!",
-    CATEGORY_LISTING_FAILED: "Failed to list/unlist category!",
+  export const DomainErrorMsg = {
+    NAME_REQUIRED : "Enter valid domain name!",
+    INVALID_ID : "Invalid domain ID",
+    DOMAIN_ALREADY_EXISTS: "Domain already exists!",
+    DOMAIN__NOT_UPDATED: "Domain not updated!",
+    DOMAIN__FAILED_TO_FETCH: "Failed to fetch domains",
+    DOMAIN_NOT_FOUND: "Domain not found!",
+    DOMAIN__NOT_CREATED: "Could not create domain!",
+    DOMAIN__NOT_FETCHED: "Could not fetch domains!",
+    DOMAIN__LISTING_FAILED: "Failed to list/unlist domain!",
     INTERNAL_SERVER_ERROR: "Internal server error!",
   };
+
+  export const SkillSuccessMsg = {
+    SKILL_CREATED: "Skill created successfully!",
+    SKILL_UPDATED: "Skill updated successfully!",
+    SKILL_FETCHED: "Skill fetched successfully!",
+    SKILLS_FETCHED: "Fetched skills successfully!",
+    SKILL__FOUND: "Skill found successfully!",
+    SKILL__LISTED: "Skill listed successfully!",
+    SKILL__UNLISTED: "Skill unlisted successfully!",
+  };
   
+  export const SkillErrorMsg = {
+    NAME_REQUIRED : "Enter valid skill name!",
+    INVALID_ID : "Invalid skill ID",
+    SKILL_ALREADY_EXISTS: "Skill already exists!",
+    SKILL__NOT_UPDATED: "Skill not updated!",
+    SKILL__FAILED_TO_FETCH: "Failed to fetch skills",
+    SKILL_NOT_FOUND: "Skill not found!",
+    SKILL__NOT_CREATED: "Could not create skill!",
+    SKILL__NOT_FETCHED: "Could not fetch skills!",
+    SKILL__LISTING_FAILED: "Failed to list/unlist skill!",
+    INTERNAL_SERVER_ERROR: "Internal server error!",
+    INVALID_DOMAIN_ID : "Invalid domain ID"
+  };
+  
+  export const IndustrySuccessMsg = {
+    INDUSTRY_CREATED: "Industry created successfully!",
+    INDUSTRY_UPDATED: "Industry updated successfully!",
+    INDUSTRY_FETCHED: "Fetched indutry successfully!",
+    INDUSTRIES_FETCHED: "Fetched indutry successfully!",
+    INDUSTRY__FOUND: "Industry found successfully!",
+    INDUSTRY__LISTED: "Industry listed successfully!",
+    INDUSTRY__UNLISTED: "Industry unlisted successfully!",
+  };
+  
+  export const IndustryErrorMsg = {
+    NAME_REQUIRED : "Enter valid industry name!",
+    INVALID_ID : "Invalid industry ID",
+    INDUSTRY_ALREADY_EXISTS: "Industry already exists!",
+    INDUSTRY__NOT_UPDATED: "Industry not updated!",
+    INDUSTRY__FAILED_TO_FETCH: "Failed to fetch indutries",
+    INDUSTRY_NOT_FOUND: "Industry not found!",
+    INDUSTRY__NOT_CREATED: "Could not create industry!",
+    INDUSTRY__NOT_FETCHED: "Could not fetch indutries!",
+    INDUSTRY__LISTING_FAILED: "Failed to list/unlist industry!",
+    INTERNAL_SERVER_ERROR: "Internal server error!",
+  };
+
   export const CourseErrorMessages = {
     SUBMIT_VERIFICATION_CONDITION:
       "Course must have at least one chapter and one quiz with questions to submit for verification",
@@ -895,10 +943,10 @@ export const JwtConfig = {
     GET_OFFER_BY_ID: "Course offer retrieved successfully",
   };
   
-  export const CATEGORY_OFFER_MESSAGE = {
-    CATEGORY_OFFER_CREATED: "Category offer created successfully",
-    CATEGORY_OFFER_EDITED: "Category offer updated successfully",
-    CATEGORY_OFFER_DELETED: "Category offer deleted successfully",
+  export const DOMAIN__OFFER_MESSAGE = {
+    DOMAIN__OFFER_CREATED: "DOMAIN_ offer created successfully",
+    DOMAIN__OFFER_EDITED: "DOMAIN_ offer updated successfully",
+    DOMAIN__OFFER_DELETED: "DOMAIN_ offer deleted successfully",
   };
   
   export const LearningPathErrorMessages = {
@@ -988,7 +1036,7 @@ export const JwtConfig = {
     TITLE_LENGTH_INVALID: "Title must be a string between 3 and 100 characters",
     DESCRIPTION_LENGTH_INVALID:
       "Description must be a string between 10 and 1000 characters",
-    INVALID_CATEGORY_ID: "Invalid category ID",
+    INVALID_DOMAIN__ID: "Invalid DOMAIN_ ID",
     INVALID_ITEMS_FORMAT: "Invalid items format",
     ITEMS_MUST_BE_NON_EMPTY_ARRAY: "Items must be a non-empty array",
     ITEM_INVALID_STRUCTURE:
@@ -1004,4 +1052,9 @@ export const JwtConfig = {
     CREATED: "Learning path created successfully",
     UPDATED: "Learning path updated successfully",
     DELETED: "Learning path deleted successfully",
+  };
+
+  export const MongoDB = {
+    SUCCESS: "SUCCESS: MongoDB connected",
+    ERROR: "ERROR: MongoDB connection error",
   };

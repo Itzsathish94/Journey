@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express";
 import { StatusCode, Roles } from "../utils/enum";
-import { AuthErrorMsg } from "../utils/constants/constants";
+import { AuthErrorMsg } from "../utils/constants";
 import { UserRepository } from "../repositories/user-repository.ts/user-repository";
 import InterviewerRepository from "../repositories/interviewer-repository/interviewer-repository";
 import { AuthenticatedRequest } from "./authenticated-routes";

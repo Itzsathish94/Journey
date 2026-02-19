@@ -6,7 +6,7 @@ import { StatusCode } from "../../utils/enum";
 import {
   InterviewerErrorMessages,
   InterviewerSuccessMessages,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import { appLogger } from "../../utils/logger";
 import { IInterviewer } from "../../models/interviewer-model";
 import { AuthenticatedRequest } from "../../middlewares/authenticated-routes";

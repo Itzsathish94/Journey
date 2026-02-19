@@ -21,12 +21,12 @@ import { AdminVerificationService } from "@/services/admin/admin-verification-se
 import IAdminVerificationController from "@/controllers/admin/interfaces/IAdminVerificationController"
 import { AdminVerificationController } from "@/controllers/admin/admin-verification-controller";
 
-import { IAdminCategoryRepository } from "@/repositories/admin-repository/interfaces/IAdminCategoryRepository";
-import { AdminCategoryRepository } from "@/repositories/admin-repository/admin-category-repository";
-import { IAdminCategoryService } from "@/services/admin/interfaces/IAdminCategoryService";
-import { AdminCategoryService } from "@/services/admin/admin-category-service";
-import { IAdminCategoryController } from "@/controllers/admin/interfaces/IAdminCategoryController";
-import { AdminCategoryController } from "@/controllers/admin/admin-category-controller";
+import { IAdminDomainRepository } from "@/repositories/admin-repository/interfaces/IAdminDomainRepository";
+import { AdminDomainRepository } from "@/repositories/admin-repository/admin-domain-repository";
+import { IAdminDomainService } from "@/services/admin/interfaces/IAdminDomainService";
+import { AdminDomainService } from "@/services/admin/admin-domain-service";
+import { IAdminDomainController } from "@/controllers/admin/interfaces/IAdminDomainController";
+import { AdminDomainController } from "@/controllers/admin/admin-domain-controller";
 
 import { IJwtService } from "@/services/common/interfaces/IJWTService";
 import { JwtService } from "@/services/common/jwt-service";
@@ -60,13 +60,13 @@ const adminVerificationRepository:IAdminVerificationRepository = new AdminVerifi
 const adminVerificationService:IAdminVerificationService = new AdminVerificationService(adminVerificationRepository,interviewerService);
 const adminVerificationController:IAdminVerificationController = new AdminVerificationController(adminVerificationService,emailService);
 
-// Category
-const adminCategoryRepository : IAdminCategoryRepository = new AdminCategoryRepository();
-const adminCategoryServie : IAdminCategoryService= new AdminCategoryService(adminCategoryRepository);
-const adminCategoryController : IAdminCategoryController = new AdminCategoryController(adminCategoryServie);
+// Domain
+const adminDomainRepository : IAdminDomainRepository = new AdminDomainRepository();
+const adminDomainServie : IAdminDomainService= new AdminDomainService(adminDomainRepository);
+const adminDomainController : IAdminDomainController = new AdminDomainController(adminDomainServie);
 
 export {
   adminController,
   adminVerificationController,
-  adminCategoryController
+  adminDomainController
 };

@@ -2,7 +2,7 @@ import { Router } from "express";
 import {
   adminController,
   adminVerificationController,
-  adminCategoryController
+  adminDomainController
 } from "../config/dependency-injector/admin-dependency-injector";
 import authenticateToken from "../middlewares/authenticated-routes";
 
@@ -11,7 +11,7 @@ import { isAdmin } from "../middlewares/role-auth";
 let router = Router();
 
 router.post("/login", adminController.login.bind(adminController));
-router.post("/logout", adminController.logout.bind(adminController));
+router.post("/logout", authenticateToken, isAdmin, adminController.logout.bind(adminController));
 
 //get all users and interviewers
 router.get(
@@ -60,41 +60,41 @@ router.post(
   adminVerificationController.approveRequest.bind(adminVerificationController),
 );
 
-//category routes
-
-router.get(
-  "/categories",
-  authenticateToken,
-  isAdmin,
-  adminCategoryController.getAllCategory.bind(adminCategoryController),
-);
-
-router.get(
-  "/category/:categoryId",
-  authenticateToken,
-  isAdmin,
-  adminCategoryController.findCategoryById.bind(adminCategoryController),
-);
-
-router.put(
-  "/categoryListOrUnlist/:id",
-  authenticateToken,
-  isAdmin,
-  adminCategoryController.listOrUnlistCategory.bind(adminCategoryController),
-);
+//domain routes
 
 router.post(
-  "/category",
+  "/domain",
   authenticateToken,
   isAdmin,
-  adminCategoryController.addCategory.bind(adminCategoryController),
+  adminDomainController.createDomain.bind(adminDomainController),
+);
+
+router.get(
+  "/domains",
+  authenticateToken,
+  isAdmin,
+  adminDomainController.getAllDomainsPaginated.bind(adminDomainController),
+);
+
+router.get(
+  "/domain/:domainId",
+  authenticateToken,
+  isAdmin,
+  adminDomainController.getDomainById.bind(adminDomainController),
 );
 
 router.put(
-  "/category",
+  "/domainStatus/:domainId",
   authenticateToken,
   isAdmin,
-  adminCategoryController.editCategory.bind(adminCategoryController),
+  adminDomainController.toggleActiveDomain.bind(adminDomainController),
+);
+
+router.put(
+  "/domain/:domainId",
+  authenticateToken,
+  isAdmin,
+  adminDomainController.updateDomain.bind(adminDomainController),
 );
 
 

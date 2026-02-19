@@ -6,7 +6,7 @@ import { StatusCode } from "../../utils/enum";
 import {
   UserSuccessMessages,
   UserErrorMessages,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import bcrypt from "bcrypt";
 import { AuthenticatedRequest } from "../../middlewares/authenticated-routes";
 import { appLogger } from "../../utils/logger";

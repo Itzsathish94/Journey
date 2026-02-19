@@ -7,7 +7,7 @@ import {
   INTERVIEWER_SUCCESS_MESSAGE,
   VerificationErrorMessages,
   VerificationSuccessMessages,
-} from "../../utils/constants/constants";
+} from "../../utils/constants";
 import { appLogger } from "../../utils/logger";
 import {
   BadRequestError,
