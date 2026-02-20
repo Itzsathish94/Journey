@@ -1,15 +1,15 @@
-import { IInterviewer } from "../../../models/interviewer-model";
+import { IInterviewerModel } from "../../../models/interviewer-model";
 
 export interface IAdminInterviewerRepository {
   getAllInterviewers(
     page: number,
     limit: number,
     search: string,
-  ): Promise<{ interviewers: IInterviewer[]; total: number }>;
+  ): Promise<{ interviewers: IInterviewerModel[]; total: number }>;
 
-  getInterviewerData(email: string): Promise<IInterviewer | null>;
+  getInterviewerData(email: string): Promise<IInterviewerModel | null>;
 
-  updateInterviewerProfile(email: string, data: Partial<IInterviewer>): Promise<IInterviewer | null>;
+  updateInterviewerProfile(email: string, data: Partial<IInterviewerModel>): Promise<IInterviewerModel | null>;
 
-  findById(id: string): Promise<IInterviewer | null>;
+  findById(id: string): Promise<IInterviewerModel | null>;
 }

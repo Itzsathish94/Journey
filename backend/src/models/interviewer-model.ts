@@ -1,114 +1,169 @@
 
 import mongoose, { Types, Document, ObjectId, Schema } from "mongoose";
+
+// Payload used when creating an interviewer from the app layer
 export interface IInterviewerDTO {
   username: string;
   email: string;
   password: string;
+  role: "USER" | "INTERVIEWER" | "ADMIN";
+  isVerified?: boolean;
+}
+
+// Mock offering type (single domain + multiple skills/industries)
+export interface IMockOffering {
+  _id?: Types.ObjectId;
+  domainId: Types.ObjectId;
+  skillIds: Types.ObjectId[];
+  industryIds: Types.ObjectId[];
+  difficultyLevels: {
+    // pricing tiers for this combo
+    level: "entry" | "mid" | "senior" | "job_desc_only";
+    duration?: number; // minutes
+    price: number; // in rupees
+  }[];
+  isActive: boolean;
 }
 
 export interface InterviewerProfileDTO {
-  _id: ObjectId;
-  interviewerName: string;
+  _id: Types.ObjectId;
+  username: string;
   email: string;
   role: string;
   isBlocked: boolean;
-  skills?: string[];
-  expertise?: string[];
-  status: boolean;
-  bankAccountLinked: boolean;
+  isVerified: boolean;
   profilePicUrl?: string;
+  bio?: string;
+  currentDesignation?: string;
+  // high‑level tags used for cards & profile (no mock offerings here)
+  domains: Types.ObjectId[];
+  skills: Types.ObjectId[];
+  industries: Types.ObjectId[];
 }
 
-export interface IInterviewer extends Document {
-  _id: ObjectId;
+export interface IInterviewerModel extends Document {
+  _id: Types.ObjectId;
   username: string;
   email: string;
   password: string;
-  mobileNo?: string;
-  profilePicUrl?: string;
   role: "INTERVIEWER";
+
+  //profile
+  profilePicUrl?: string;
+  bio?: string;
+  currentDesignation:string;
+
+  // Overall expertise (shown on profile)
+  domains: Types.ObjectId[];
+  skills: Types.ObjectId[];
+  industries: Types.ObjectId[];
+
+  // Mock offerings (what they actually offer)
+  offerings: IMockOffering[];
+
+  //status
   isVerified: boolean;
   isBlocked: boolean;
-  skills?: string[];
-  expertise?: string[];
-  membershipExpiryDate?: Date;
-  membershipPlanId?: mongoose.Types.ObjectId;
-  bankAccount?: {
-    accountHolderName?: string;
-    accountNumber?: string;
-    ifscCode?: string;
-    bankName?: string;
-  };
+  
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface IInterviewerPopulated extends IInterviewer{
-  username:string;
-}
+// Backwards‑compat convenience type used across services/repositories
+export type IInterviewer = IInterviewerModel;
 
-const interviewerSchema: Schema<IInterviewer> = new Schema(
+
+const mockOfferingSchema = new Schema({
+  domainId: {
+    type: Schema.Types.ObjectId,
+    ref: "Domain",
+    required: true,
+  },
+  skillIds: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Skill",
+      required: true,
+    },
+  ],
+  industryIds: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "Industry",
+      required: true,
+    },
+  ],
+  difficultyLevels: [
+    {
+      level: {
+        type: String,
+        enum: ["entry", "mid", "senior", "job_desc_only"],
+        required: true,
+      },
+      duration: {
+        type: Number,
+        required: true,
+      },
+      price: {
+        type: Number,
+        required: true,
+      },
+    },
+  ],
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
+});
+
+const interviewerSchema: Schema<IInterviewerModel> = new Schema(
   {
     username: {
       type: String,
       required: true,
+      trim: true,
     },
     email: {
       type: String,
       required: true,
+      unique: true,
+      lowercase: true,       // ← prevents duplicates with different case
+      trim: true,
     },
     password: {
       type: String,
       required: true,
-    },
-    mobileNo: {
-      type: String,
-      required: false,
-    },
-    profilePicUrl: {
-      type: String,
-      required: false,
+      select: false,         // ← never return in queries by default
     },
     role: {
       type: String,
       enum: ["USER", "INTERVIEWER", "ADMIN"],
-      default: "INTERVIEWER",
+      required: true,        // ← remove default, set explicitly on create
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
+    profilePicUrl: String,
+    bio: {
+      type: String,
+      maxlength: 500,
+      trim: true,
     },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
-    membershipExpiryDate: {
-      type: Date,
-    },
-    membershipPlanId: {
-      type: Schema.Types.ObjectId,
-      ref: "MembershipPlan",
-      required: false,
-    },
-    skills: {
-      type: [String],
-      default: [],
-    },
-    expertise: {
-      type: [String],
-      default: [],
-    },
-    bankAccount: {
-      accountHolderName: { type: String, required: false },
-      accountNumber: { type: String, required: false },
-      ifscCode: { type: String, required: false },
-      bankName: { type: String, required: false },
-    },
+    currentDesignation: String,  // ← fixed typo
+
+    domains: [{ type: Schema.Types.ObjectId, ref: "Domain" }],
+    skills: [{ type: Schema.Types.ObjectId, ref: "Skill" }],
+    industries: [{ type: Schema.Types.ObjectId, ref: "Industry" }],
+
+    offerings: [mockOfferingSchema],
+
+    isVerified: { type: Boolean, default: false },
+    isBlocked: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
-const InterviewerModel = mongoose.model<IInterviewer>(
+// Optional: unique index on email (already has unique: true)
+interviewerSchema.index({ email: 1 }, { unique: true });
+
+const InterviewerModel = mongoose.model<IInterviewerModel>(
   "INTERVIEWER",
   interviewerSchema,
 );
@@ -116,6 +171,6 @@ const InterviewerModel = mongoose.model<IInterviewer>(
 export default InterviewerModel;
 
 
-export function isInterviewer(obj: Types.ObjectId | IInterviewer): obj is IInterviewer {
-  return (obj as IInterviewer)?.username !== undefined;
+export function isInterviewer(obj: Types.ObjectId | IInterviewerModel): obj is IInterviewerModel {
+  return (obj as IInterviewerModel)?.username !== undefined;
 }

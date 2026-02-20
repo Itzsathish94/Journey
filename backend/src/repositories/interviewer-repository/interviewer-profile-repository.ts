@@ -10,8 +10,8 @@ export class InterviewerProfileRepository
     super(InterviewerModel);
   }
 
-  async getByEmail(email: string): Promise<IInterviewer | null> {
-    return await this.findOne({ email });
+  async getByEmail(email: string) {
+    return this.model.findOne({ email }).select("+password");
   }
 
   async updateProfile(

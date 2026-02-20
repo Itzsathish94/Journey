@@ -3,6 +3,7 @@ import {
   interviewerController,
   interviewerVerificationController,
   interviewerProfileController,
+  interviewerMockController,
 } from "../config/dependency-injector/interviewer-dependency-injector";
 import upload from "../utils/multer";
 import authenticateToken from "../middlewares/authenticated-routes";
@@ -61,6 +62,47 @@ router.put(
   restrictBlockedUser as RequestHandler,    // ✅
   isInterviewer as RequestHandler,          // ✅
   interviewerProfileController.updatePassword.bind(interviewerProfileController),
+);
+
+// mock settings (only for verified interviewers, enforced in service)
+router.get(
+  "/mocks",
+  authenticateToken as RequestHandler,
+  restrictBlockedUser as RequestHandler,
+  isInterviewer as RequestHandler,
+  interviewerMockController.getMyMocks.bind(
+    interviewerMockController,
+  ) as unknown as RequestHandler,
+);
+
+router.post(
+  "/mocks",
+  authenticateToken as RequestHandler,
+  restrictBlockedUser as RequestHandler,
+  isInterviewer as RequestHandler,
+  interviewerMockController.createMock.bind(
+    interviewerMockController,
+  ) as unknown as RequestHandler,
+);
+
+router.put(
+  "/mocks/:mockId",
+  authenticateToken as RequestHandler,
+  restrictBlockedUser as RequestHandler,
+  isInterviewer as RequestHandler,
+  interviewerMockController.updateMock.bind(
+    interviewerMockController,
+  ) as unknown as RequestHandler,
+);
+
+router.patch(
+  "/mocks/:mockId/toggle",
+  authenticateToken as RequestHandler,
+  restrictBlockedUser as RequestHandler,
+  isInterviewer as RequestHandler,
+  interviewerMockController.toggleMock.bind(
+    interviewerMockController,
+  ) as unknown as RequestHandler,
 );
 
 const interviewerRoutes = router;

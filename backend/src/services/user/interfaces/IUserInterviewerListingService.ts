@@ -6,8 +6,9 @@ export interface IUserInterviewerListingService {
     limit: number,
     search?: string,
     sortOrder?: "asc" | "desc",
-    skill?: string,
-    expertise?: string,
+    domainId?: string,
+    skillId?: string,
+    industryId?: string,
   ): Promise<{ data: IInterviewer[]; total: number }>;
 
   getinterviewerById(id: string): Promise<IInterviewer | null>;

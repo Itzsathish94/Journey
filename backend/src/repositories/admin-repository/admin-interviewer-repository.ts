@@ -1,9 +1,9 @@
-import InterviewerModel, { IInterviewer } from "../../models/interviewer-model";
+import InterviewerModel, { IInterviewerModel } from "../../models/interviewer-model";
 import { GenericRepository } from "../generic-repository";
 import { IAdminInterviewerRepository } from "./interfaces/IAdminInterviewerRepository";
 
 export class AdminInterviewerRespository
-  extends GenericRepository<IInterviewer>
+  extends GenericRepository<IInterviewerModel>
   implements IAdminInterviewerRepository
 {
   constructor() {
@@ -14,7 +14,7 @@ export class AdminInterviewerRespository
     page: number,
     limit: number,
     search: string,
-  ): Promise<{ interviewers: IInterviewer[]; total: number }> {
+  ): Promise<{ interviewers: IInterviewerModel[]; total: number }> {
     try {
       const query = {
         $or: [
@@ -35,7 +35,7 @@ export class AdminInterviewerRespository
 
   //get specified data based on email
 
-  async getInterviewerData(email: string): Promise<IInterviewer | null> {
+  async getInterviewerData(email: string): Promise<IInterviewerModel | null> {
     try {
       const InterviewerData = await this.findOne({ email: email });
       return InterviewerData;
@@ -46,7 +46,7 @@ export class AdminInterviewerRespository
 
   //block or unblock
 
-  async updateInterviewerProfile(email: string, data:Partial<IInterviewer>): Promise<IInterviewer | null> {
+  async updateInterviewerProfile(email: string, data:Partial<IInterviewerModel>): Promise<IInterviewerModel | null> {
     try {
       const response = await this.findOneAndUpdate(
         { email },
@@ -60,7 +60,7 @@ export class AdminInterviewerRespository
     }
   }
 
-  async findById(id: string): Promise<IInterviewer | null> {
+  async findById(id: string): Promise<IInterviewerModel | null> {
     try {
       return await this.model.findById(id).exec();
     } catch (error) {

@@ -8,4 +8,5 @@ export default interface IInterviewerService {
   googleLogin(name: string, email: string): Promise<IInterviewer | null>;
   findById(userId: string | Types.ObjectId): Promise<IInterviewer | null>;
   setInterviewerVerified(email: string): Promise<IInterviewer | null>;
+  findByEmailWithPassword(email: string): Promise<IInterviewer | null>;
 }

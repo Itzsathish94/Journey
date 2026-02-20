@@ -17,8 +17,9 @@ export class UserInterviewerListingService
     limit: number,
     search?: string,
     sortOrder?: "asc" | "desc",
-    skill?: string,
-    expertise?: string,
+    domainId?: string,
+    skillId?: string,
+    industryId?: string,
   ): Promise<{ data: IInterviewer[]; total: number }> {
     const { data, total } =
       await this._interviewerListingRepo.listinterviewerInterviewersPaginated(
@@ -26,8 +27,9 @@ export class UserInterviewerListingService
         limit,
         search,
         sortOrder,
-        skill,
-        expertise,
+        domainId,
+        skillId,
+        industryId,
       );
 
     const updatedData = await Promise.all(

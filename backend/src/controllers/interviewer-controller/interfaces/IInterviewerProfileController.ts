@@ -3,5 +3,4 @@ export interface IInterviewerProfileController {
   getProfile(req: Request, res: Response): Promise<void>;
   updateProfile(req: Request, res: Response): Promise<void>;
   updatePassword(req: Request, res: Response): Promise<void>;
-  updateBankAccount(req: Request, res: Response): Promise<void>;
 }

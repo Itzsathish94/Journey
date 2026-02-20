@@ -73,46 +73,6 @@ export class InterviewerProfileService implements IInterviewerProfileService {
     return !!updated;
   }
 
-  async updateBankAccount(
-    id: string,
-    bankAccount: {
-      accountHolderName?: string;
-      accountNumber?: string;
-      ifscCode?: string;
-      bankName?: string;
-    },
-  ): Promise<InterviewerProfileDTO | null> {
-    const bankAccountData: Partial<IInterviewer> = {
-      bankAccount: {
-        ...(bankAccount.accountHolderName && {
-          accountHolderName: bankAccount.accountHolderName,
-        }),
-        ...(bankAccount.accountNumber && {
-          accountNumber: await bcrypt.hash(bankAccount.accountNumber, 10),
-        }),
-        ...(bankAccount.ifscCode && {
-          ifscCode: await bcrypt.hash(bankAccount.ifscCode, 10),
-        }),
-        ...(bankAccount.bankName && { bankName: bankAccount.bankName }),
-      },
-    };
-
-    const updatedInterviewer = await this._interviewerProfileRepo.updateProfile(
-      id,
-      bankAccountData,
-    );
-
-    if (!updatedInterviewer) {
-      return null;
-    }
-
-    const profilePicUrl = updatedInterviewer.profilePicUrl
-      ? await getPresignedUrl(updatedInterviewer.profilePicUrl)
-      : undefined;
-
-    return toInterviewerProfileDTO(updatedInterviewer, profilePicUrl);
-  }
-
   async getInterviewerRaw(email: string): Promise<IInterviewer | null> {
     return await this._interviewerProfileRepo.getByEmail(email);
   }

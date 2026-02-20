@@ -8,7 +8,8 @@ export const mapInterviewerToDTO = (interviewer: IInterviewer): InterviewerDTO =
     id: interviewer._id.toString(),
     name: interviewer.username,
     email: interviewer.email,
-    status: interviewer.isBlocked,
+    isVerified: interviewer.isVerified,
+    isBlocked: interviewer.isBlocked,
     createdAt: new Date(interviewer.createdAt).toLocaleDateString("en-GB"),
   };
 };

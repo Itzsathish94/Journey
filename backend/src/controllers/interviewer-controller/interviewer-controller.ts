@@ -53,15 +53,27 @@ export class InterviewerController implements IInterviewerController {
       };
 
       if (!email || !password || !username)
-        throwAppError(BadRequestError, INTERVIEWER_MESSAGES.EMAIL_PASSWORD_USERNAME_REQUIRED);
+        throwAppError(
+          BadRequestError,
+          INTERVIEWER_MESSAGES.EMAIL_PASSWORD_USERNAME_REQUIRED,
+        );
 
-      const existingInterviewer = await this._interviewerService.findByEmail(email);
-      if (existingInterviewer) throwAppError(ConflictError, INTERVIEWER_MESSAGES.USER_ALREADY_EXISTS);
+      const existingInterviewer =
+        await this._interviewerService.findByEmail(email);
+      if (existingInterviewer)
+        throwAppError(
+          ConflictError,
+          INTERVIEWER_MESSAGES.USER_ALREADY_EXISTS,
+        );
 
       const hashedPassword = await bcrypt.hash(password, 10);
       const otp = await this._otpGenerator.createOtpDigit();
       const otpCreated = await this._otpService.createOtp(email, otp, 60);
-      if (!otpCreated) throwAppError(InternalServerError, INTERVIEWER_MESSAGES.FAILED_TO_CREATE_OTP);
+      if (!otpCreated)
+        throwAppError(
+          InternalServerError,
+          INTERVIEWER_MESSAGES.FAILED_TO_CREATE_OTP,
+        );
 
       await this._emailSender.sentEmailVerification("Interviewer", email, otp);
 
@@ -149,7 +161,12 @@ async createUser(req: Request, res: Response): Promise<void> {
       role?: string;
     };
 
-    if (!decoded || !decoded.email || !decoded.password || !decoded.username) {
+    if (
+      !decoded ||
+      !decoded.email ||
+      !decoded.password ||
+      !decoded.username
+    ) {
       res.status(StatusCode.UNAUTHORIZED).json({
         success: false,
         message: INTERVIEWER_MESSAGES.TOKEN_INVALID,
@@ -185,7 +202,9 @@ async createUser(req: Request, res: Response): Promise<void> {
       isBlocked: false,
     };
 
-    const user = await this._interviewerService.createUser(userData as IInterviewer);
+    const user = await this._interviewerService.createUser(
+      userData as IInterviewer,
+    );
 
     if (user) {
       await this._otpService.deleteOtp(decoded.email);
@@ -193,10 +212,10 @@ async createUser(req: Request, res: Response): Promise<void> {
       res.status(StatusCode.CREATED).json({
         success: true,
         message: INTERVIEWER_MESSAGES.INTERVIEWER_CREATED_SUCCESSFULLY,
-        user: {
-          id: user._id,
-          email: user.email,
+        interviewer: {
+          interviewerId: user._id,
           username: user.username,
+          email: user.email,
           role: user.role,
           isVerified: user.isVerified,
         },
@@ -223,18 +242,30 @@ async createUser(req: Request, res: Response): Promise<void> {
 async login(req: Request, res: Response): Promise<void> {
   try {
     const { email, password } = req.body as { email: string; password: string };
-    if (!email || !password) throwAppError(BadRequestError, INTERVIEWER_MESSAGES.EMAIL_PASSWORD_USERNAME_REQUIRED);
+    if (!email || !password)
+      throwAppError(
+        BadRequestError,
+        INTERVIEWER_MESSAGES.EMAIL_PASSWORD_USERNAME_REQUIRED,
+      );
 
-    const interviewer = await this._interviewerService.findByEmail(email);
-    
-    if (!interviewer){
+      const interviewer = await this._interviewerService.findByEmailWithPassword(email);
+
+    if (!interviewer) {
       throwAppError(NotFoundError, INTERVIEWER_MESSAGES.USER_NOT_FOUND);
       return;
     }
-    if (interviewer.isBlocked) throwAppError(ForbiddenError, INTERVIEWER_MESSAGES.INTERVIEWER_BLOCKED);
+    if (interviewer.isBlocked)
+      throwAppError(
+        ForbiddenError,
+        INTERVIEWER_MESSAGES.INTERVIEWER_BLOCKED,
+      );
 
     const valid = await bcrypt.compare(password, interviewer.password);
-    if (!valid) throwAppError(UnauthorizedError, INTERVIEWER_MESSAGES.INVALID_CREDENTIALS);
+    if (!valid)
+      throwAppError(
+        UnauthorizedError,
+        INTERVIEWER_MESSAGES.INVALID_CREDENTIALS,
+      );
 
     const accessToken = await this._jwt.accessToken({
       email,
@@ -264,10 +295,10 @@ async login(req: Request, res: Response): Promise<void> {
       .json({
         success: true,
         message: INTERVIEWER_MESSAGES.LOGIN_SUCCESS,
-        user: {
-          id: interviewer._id,
-          email: interviewer.email,
+        interviewer: {
+          interviewerId: interviewer._id,
           username: interviewer.username,
+          email: interviewer.email,
           role: interviewer.role,
           isBlocked: interviewer.isBlocked,
           isVerified: interviewer.isVerified,
@@ -294,21 +325,28 @@ async login(req: Request, res: Response): Promise<void> {
       if (!email) throwAppError(BadRequestError, INTERVIEWER_MESSAGES.EMAIL_REQUIRED);
 
       const existing = await this._interviewerService.findByEmail(email);
-      if (!existing){
+      if (!existing) {
         throwAppError(NotFoundError, INTERVIEWER_MESSAGES.USER_NOT_FOUND);
-        return
+        return;
       }
 
       const otp = await this._otpGenerator.createOtpDigit();
       const created = await this._otpService.createOtp(email, otp, 60);
-      if (!created) throwAppError(InternalServerError, INTERVIEWER_MESSAGES.FAILED_TO_CREATE_OTP);
+      if (!created)
+        throwAppError(
+          InternalServerError,
+          INTERVIEWER_MESSAGES.FAILED_TO_CREATE_OTP,
+        );
 
       await this._emailSender.sentEmailVerification("Interviewer", email, otp);
 
       res.status(StatusCode.OK).json({
         success: true,
         message: INTERVIEWER_MESSAGES.REDIERCTING_OTP_PAGE,
-        data: { email: existing.email, username: existing.username },
+        data: {
+          email: existing.email,
+          username: existing.username,
+        },
       });
     } catch (error) {
       handleControllerError(error, res);
@@ -410,15 +448,25 @@ async verifyResetOtp(req: Request, res: Response): Promise<void> {
 
 async doGoogleLogin(req: Request, res: Response): Promise<void> {
   try {
-    const { name, email } = req.body as { name: string; email: string };
-    if (!name || !email) throwAppError(BadRequestError, INTERVIEWER_MESSAGES.NAME_EMAIL_REQUIRED);
+    const { username, email } = req.body as {
+      username: string;
+      email: string;
+    };
+    if (!username || !email)
+      throwAppError(
+        BadRequestError,
+        INTERVIEWER_MESSAGES.NAME_EMAIL_REQUIRED,
+      );
 
     const existing = await this._interviewerService.findByEmail(email);
 
     let interviewer: IInterviewer;
 
     if (!existing) {
-      const newInterviewer = await this._interviewerService.googleLogin(name, email);
+      const newInterviewer = await this._interviewerService.googleLogin(
+        username,
+        email,
+      );
       if (!newInterviewer) {
         throwAppError(InternalServerError, INTERVIEWER_MESSAGES.GOOGLE_LOGIN_FAILED);
         return;
@@ -458,9 +506,9 @@ async doGoogleLogin(req: Request, res: Response): Promise<void> {
         success: true,
         message: INTERVIEWER_MESSAGES.GOOGLE_LOGIN_SUCCESS,
         interviewer: {
-          id: interviewer._id,
-          email: interviewer.email,
+          interviewerId: interviewer._id,
           username: interviewer.username,
+          email: interviewer.email,
           role: interviewer.role,
           isBlocked: interviewer.isBlocked,
           isVerified: interviewer.isVerified,

@@ -28,6 +28,13 @@ import { InterviewerProfileService } from "@/services/interviewers/interviewer-p
 import { IInterviewerProfileController } from "@/controllers/interviewer-controller/interfaces/IInterviewerProfileController";
 import { InterviewerProfileController } from "@/controllers/interviewer-controller/interviewer-profile-controller";
 
+import { IInterviewerMockRepository } from "@/repositories/interviewer-repository/interfaces/IInterviewerMockRepository";
+import { InterviewerMockRepository } from "@/repositories/interviewer-repository/interviewer-mock-repository";
+import { IInterviewerMockService } from "@/services/interviewers/interfaces/IInterviewerMockService";
+import { InterviewerMockService } from "@/services/interviewers/interviewer-mock-service";
+import { IInterviewerMockController } from "@/controllers/interviewer-controller/interfaces/IInterviewerMockController";
+import { InterviewerMockController } from "@/controllers/interviewer-controller/interviewer-mock-controller";
+
 import { IAdminUserRepository } from "@/repositories/admin-repository/interfaces/IAdminUserRepository";
 import { AdminUserRespository } from "@/repositories/admin-repository/admin-user-repository";
 
@@ -70,14 +77,23 @@ const interviewerVerificationService : IInterviewerVerificationService = new Int
 const interviewerVerificationController : IInterviewerVerificationController = new InterviewerVerificationController(interviewerVerificationService);
 
 // Profile
-const interviewerProfileRepo : IInterviewerProfileRepository = new InterviewerProfileRepository();
-const interviewerProfileService : IInterviewerProfileService = new InterviewerProfileService(interviewerProfileRepo);
-const interviewerProfileController : IInterviewerProfileController = new InterviewerProfileController(interviewerProfileService);
+const interviewerProfileRepo: IInterviewerProfileRepository = new InterviewerProfileRepository();
+const interviewerProfileService: IInterviewerProfileService = new InterviewerProfileService(interviewerProfileRepo);
+const interviewerProfileController: IInterviewerProfileController = new InterviewerProfileController(interviewerProfileService);
 
+// Mock settings
+const interviewerMockRepo: IInterviewerMockRepository = new InterviewerMockRepository();
+const interviewerMockService: IInterviewerMockService = new InterviewerMockService(
+  interviewerMockRepo,
+  interviewerService,
+);
+const interviewerMockController: IInterviewerMockController = new InterviewerMockController(
+  interviewerMockService,
+);
 
 export {
   interviewerController,
   interviewerVerificationController,
   interviewerProfileController,
-
+  interviewerMockController,
 };

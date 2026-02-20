@@ -191,8 +191,7 @@ export const JwtConfig = {
   };
   
   export const InterviewerSuccessMessages = {
-    //bank
-    BANK_ACCOUNT_UPDATED: "bank account details updated successfully",
+    
     // Auth & Signup
     SIGNUP_SUCCESS: "Signup successful, OTP sent to email.",
     OTP_SENT: "OTP has been sent to your email successfully!",
@@ -272,8 +271,6 @@ export const JwtConfig = {
       "password updation failed you may enter wrong password",
     OTP_EXPIRED: "otp is expired.Request new One",
     OTP_NOT_FOUND: "otp is not found",
-    BANK_ACCOUNT_UPDATE_FAILED: "bank account updation failed",
-  
     INTERVIEWER_ID_MISSING_UNAUTHORIZED: "Unauthorized: Interviewer ID missing.",
     ACCESS_DENIED:
       "Access denied. You must be a interviewer to use this functionality.",

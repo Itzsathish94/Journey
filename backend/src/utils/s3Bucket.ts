@@ -48,7 +48,7 @@ export async function uploadToS3Bucket(
       throw new Error(S3BucketErrors.ERROR_GETTING_IMAGE);
     }
 
-    return uploadedResult.Key;
+    return uploadedResult.Location;
   } catch (error) {
     throw error;
   }

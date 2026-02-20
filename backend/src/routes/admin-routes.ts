@@ -30,13 +30,13 @@ router.get(
 );
 
 //block or unblock
-router.get(
+router.put(
   "/blockUser/:email",
   authenticateToken,
   isAdmin,
   adminController.blockUser.bind(adminController),
 );
-router.get(
+router.put(
   "/blockInterviewer/:email",
   authenticateToken,
   isAdmin,

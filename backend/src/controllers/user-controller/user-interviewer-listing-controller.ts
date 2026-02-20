@@ -20,16 +20,18 @@ export class UserInterviewerListingController
       const limit = parseInt(req.query.limit as string) || 9;
       const search = req.query.search as string | undefined;
       const sort = (req.query.sort as "asc" | "desc") || "asc";
-      const skill = req.query.skill as string | undefined;
-      const expertise = req.query.expertise as string | undefined;
+      const domainId = req.query.domain as string | undefined;
+      const skillId = req.query.skill as string | undefined;
+      const industryId = req.query.industry as string | undefined;
 
       const result = await this._interviewerListingService.getPaginatedinterviewers(
         page,
         limit,
         search,
         sort,
-        skill,
-        expertise,
+        domainId,
+        skillId,
+        industryId,
       );
 
       res.status(StatusCode.OK).json({ success: true, ...result });

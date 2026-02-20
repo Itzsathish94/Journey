@@ -2,6 +2,7 @@ export interface InterviewerDTO {
     id: string;
     name: string;
     email: string;
-    status: boolean;
+    isVerified: boolean;
+    isBlocked: boolean;
     createdAt: string;
   }

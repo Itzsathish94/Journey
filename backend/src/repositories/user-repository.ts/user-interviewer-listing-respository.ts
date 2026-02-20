@@ -16,11 +16,12 @@ export class UserInterviewerListingRepository
     limit: number,
     search?: string,
     sortOrder: "asc" | "desc" = "asc",
-    skill?: string,
-    expertise?: string,
+    domainId?: string,
+    skillId?: string,
+    industryId?: string,
   ): Promise<{ data: IInterviewer[]; total: number }> {
     const match: FilterQuery<IInterviewer> = {
-      isVerified: true,  // ✅ Changed from isinterviewer
+      isVerified: true,
       isBlocked: false,
     };
 
@@ -28,12 +29,16 @@ export class UserInterviewerListingRepository
       match.username = { $regex: search, $options: "i" };
     }
 
-    if (skill) {
-      match.skills = skill;
+    if (domainId) {
+      match.domains = domainId;
     }
 
-    if (expertise) {
-      match.expertise = expertise;
+    if (skillId) {
+      match.skills = skillId;
+    }
+
+    if (industryId) {
+      match.industries = industryId;
     }
 
     const pipeline: PipelineStage[] = [

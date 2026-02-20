@@ -124,7 +124,7 @@ export class SendEmail implements IEmail {
     });
   }
 
-  async sendSlotBookingConfirmation(name: string, email: string, InterviewerName: string, date: string, startTime: string, endTime: string): Promise<any> {
+  async sendSlotBookingConfirmation(name: string, email: string, username: string, date: string, startTime: string, endTime: string): Promise<any> {
     return await this.transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: email,
@@ -134,7 +134,7 @@ export class SendEmail implements IEmail {
           <div style="background-color: white; padding: 20px; border-radius: 8px;">
             <h2 style="color: #4CAF50;">Slot Booking Confirmed!</h2>
             <p>Hello <strong>${name}</strong>,</p>
-            <p>Your session with <strong>${InterviewerName}</strong> has been successfully booked.</p>
+            <p>Your session with <strong>${username}</strong> has been successfully booked.</p>
             <p><strong>Date:</strong> ${date}</p>
             <p><strong>Start Time:</strong> ${startTime}</p>
             <p><strong>End Time:</strong> ${endTime}</p>

@@ -12,14 +12,5 @@ export interface IInterviewerProfileService {
     currentPassword: string,
     newPassword: string,
   ): Promise<boolean>;
-  updateBankAccount(
-    id: string,
-    bankAccount: {
-      accountHolderName?: string;
-      accountNumber?: string;
-      ifscCode?: string;
-      bankName?: string;
-    },
-  ): Promise<InterviewerProfileDTO | null>;
   getInterviewerRaw(email: string): Promise<IInterviewer | null>;
 }
