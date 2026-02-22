@@ -87,7 +87,7 @@ export class AdminRespository
 
   //block or unblock
 
-  async updateProfile(email: string, data: Partial<IUser>): Promise<IUser | null> {
+  async blockOrUnblockUser(email: string, data: Partial<IUser>): Promise<IUser | null> {
     try {
       const response = await this._adminUserRepository.updateProfile(
         email,
@@ -99,7 +99,7 @@ export class AdminRespository
     }
   }
 
-  async updateInterviewerProfile(email: string, data: Partial<IInterviewer>): Promise<IInterviewer | null> {
+  async blockOrUnblockInterviewer(email: string, data: Partial<IInterviewer>): Promise<IInterviewer | null> {
     try {
       const response =
         await this._adminInterviewerRepository.updateInterviewerProfile(

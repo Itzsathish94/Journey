@@ -26,7 +26,6 @@ export enum StatusCode {
   }
   
  
-  
   export enum Model {
     ADMIN = "ADMIN",
     USER = "USER",

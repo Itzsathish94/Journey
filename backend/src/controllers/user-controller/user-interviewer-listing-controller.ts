@@ -20,18 +20,25 @@ export class UserInterviewerListingController
       const limit = parseInt(req.query.limit as string) || 9;
       const search = req.query.search as string | undefined;
       const sort = (req.query.sort as "asc" | "desc") || "asc";
-      const domainId = req.query.domain as string | undefined;
-      const skillId = req.query.skill as string | undefined;
-      const industryId = req.query.industry as string | undefined;
+
+      const toArray = (v: unknown): string[] => {
+        if (!v) return [];
+        if (Array.isArray(v)) return v.filter((x) => typeof x === "string");
+        if (typeof v === "string") return v.includes(",") ? v.split(",").map((s) => s.trim()) : [v];
+        return [];
+      };
+      const domainIds = toArray(req.query.domains);
+      const skillIds = toArray(req.query.skills);
+      const industryIds = toArray(req.query.industries);
 
       const result = await this._interviewerListingService.getPaginatedinterviewers(
         page,
         limit,
         search,
         sort,
-        domainId,
-        skillId,
-        industryId,
+        domainIds.length ? domainIds : undefined,
+        skillIds.length ? skillIds : undefined,
+        industryIds.length ? industryIds : undefined,
       );
 
       res.status(StatusCode.OK).json({ success: true, ...result });
@@ -68,10 +75,18 @@ export class UserInterviewerListingController
     }
   }
 
-  async getAvailableFilters(_req: Request, res: Response): Promise<void> {
+  async getAvailableFilters(req: Request, res: Response): Promise<void> {
     try {
-      const filters =
-        await this._interviewerListingService.getAvailableFilters();
+      const toArray = (v: unknown): string[] => {
+        if (!v) return [];
+        if (Array.isArray(v)) return v.filter((x) => typeof x === "string");
+        if (typeof v === "string") return v.includes(",") ? v.split(",").map((s) => s.trim()) : [v];
+        return [];
+      };
+      const domainIds = toArray(req.query.domains);
+      const filters = await this._interviewerListingService.getAvailableFilters(
+        domainIds.length ? domainIds : undefined,
+      );
       res.status(StatusCode.OK).json({ success: true, ...filters });
     } catch (error) {
       appLogger.error("error in filters", error);

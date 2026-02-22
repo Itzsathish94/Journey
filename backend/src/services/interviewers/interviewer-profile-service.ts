@@ -1,7 +1,7 @@
 import { IInterviewerProfileService } from "./interfaces/IInterviewerProfileService";
 import { IInterviewerProfileRepository } from "../../repositories/interviewer-repository/interfaces/IInterviewerProfileRepository";
-import { IInterviewer } from "../../models/interviewer-model";
-import { InterviewerProfileDTO } from "../../models/interviewer-model";
+import { IInterviewerModel } from "../../models/interviewer-model";
+import { InterviewerProfileDTO } from "../../dto/interviewer-dto/interviewer-profile-dto";
 import { toInterviewerProfileDTO } from "../../mappers/interviewer-mapper/interviewer-profile-mapper";
 import { getPresignedUrl } from "../../utils/get-presigned-url";
 import bcrypt from "bcrypt";
@@ -15,21 +15,39 @@ export class InterviewerProfileService implements IInterviewerProfileService {
 
   async getProfile(email: string): Promise<InterviewerProfileDTO | null> {
     const interviewer = await this._interviewerProfileRepo.getByEmail(email);
-
+  
     if (!interviewer) {
       return null;
     }
-
+  
+    // ✅ Populate
+    await interviewer.populate({
+      path: 'domains',
+      select: 'domainName'           
+    });
+    await interviewer.populate({
+      path: 'skills',
+      select: 'skillName'           
+    });
+    await interviewer.populate({
+      path: 'industries',
+      select: 'industryName'           
+    });
+  
+    // ✅ DEBUG: Log what populate returned
+    console.log('After populate:', JSON.stringify(interviewer.domains, null, 2));
+  
     const profilePicUrl = interviewer.profilePicUrl
       ? await getPresignedUrl(interviewer.profilePicUrl)
       : undefined;
-
+  
     return toInterviewerProfileDTO(interviewer, profilePicUrl);
   }
 
+  
   async updateProfile(
     id: string,
-    data: Partial<IInterviewer>,
+    data: Partial<IInterviewerModel>,
   ): Promise<InterviewerProfileDTO | null> {
     const updatedInterviewer = await this._interviewerProfileRepo.updateProfile(
       id,
@@ -73,7 +91,7 @@ export class InterviewerProfileService implements IInterviewerProfileService {
     return !!updated;
   }
 
-  async getInterviewerRaw(email: string): Promise<IInterviewer | null> {
+  async getInterviewerRaw(email: string): Promise<IInterviewerModel | null> {
     return await this._interviewerProfileRepo.getByEmail(email);
   }
 }

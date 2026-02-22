@@ -19,7 +19,7 @@ export class AdminSkillController implements IAdminSkillController {
 
   async createSkill(req: Request, res: Response): Promise<void> {
     try {
-      const { skillName, domainId } = req.body;
+      const { skillName} = req.body;
   
       if (!skillName || typeof skillName !== 'string' || !skillName.trim()) {
         res.status(StatusCode.BAD_REQUEST).json({
@@ -29,18 +29,10 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
   
-      if (!domainId || !Types.ObjectId.isValid(domainId)) {
-        res.status(StatusCode.BAD_REQUEST).json({
-          success: false,
-          message: SkillErrorMsg.INVALID_DOMAIN_ID,
-        });
-        return;
-      }
-  
       const trimmedSkillName = skillName.trim().toLowerCase();
   
       // Check if skill already exists under this domain
-      const existing = await this._skillService.findSkillByName(trimmedSkillName, domainId);
+      const existing = await this._skillService.findSkillByName(trimmedSkillName);
       if (existing) {
         res.status(StatusCode.CONFLICT).json({
           success: false,
@@ -49,7 +41,7 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
   
-      const newSkill = await this._skillService.addSkill(trimmedSkillName, domainId);
+      const newSkill = await this._skillService.addSkill(trimmedSkillName);
   
       res.status(StatusCode.CREATED).json({
         success: true,
@@ -77,7 +69,7 @@ export class AdminSkillController implements IAdminSkillController {
   async updateSkill(req: Request, res: Response): Promise<void> {
     try {
       const { skillId } = req.params;
-      const { skillName, domainId } = req.body;
+      const { skillName } = req.body;
 
       if (!Types.ObjectId.isValid(skillId)) {
         res.status(StatusCode.BAD_REQUEST).json({
@@ -95,17 +87,9 @@ export class AdminSkillController implements IAdminSkillController {
         return;
       }
 
-      if (domainId && !Types.ObjectId.isValid(domainId)) {
-        res.status(StatusCode.BAD_REQUEST).json({
-          success: false,
-          message: SkillErrorMsg.INVALID_DOMAIN_ID,
-        });
-        return;
-      }
-
       const trimmedSkillName = skillName.trim().toLowerCase();
 
-      const updatedSkill = await this._skillService.updateSkill(skillId, trimmedSkillName, domainId);
+      const updatedSkill = await this._skillService.updateSkill(skillId, trimmedSkillName);
 
       if (!updatedSkill) {
         res.status(StatusCode.NOT_FOUND).json({
@@ -175,20 +159,11 @@ export class AdminSkillController implements IAdminSkillController {
       let page = Number(req.query.page);
       let limit = Number(req.query.limit);
       const search = (req.query.search as string) || '';
-      const domainId = req.query.domainId as string | undefined;
-
+   
       if (isNaN(page) || page < 1) page = 1;
       if (isNaN(limit) || limit < 1) limit = 10;
 
-      if (domainId && !Types.ObjectId.isValid(domainId)) {
-        res.status(StatusCode.BAD_REQUEST).json({
-          success: false,
-          message: SkillErrorMsg.INVALID_DOMAIN_ID,
-        });
-        return;
-      }
-
-      const result = await this._skillService.getAllSkills(page, limit, search, domainId);
+      const result = await this._skillService.getAllSkills(page, limit, search);
 
       res.status(StatusCode.OK).json({
         success: true,

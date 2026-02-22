@@ -1,14 +1,10 @@
 
-import mongoose, { Types, Document, ObjectId, Schema } from "mongoose";
+import mongoose, { Types, Document, Schema } from "mongoose";
 
-// Payload used when creating an interviewer from the app layer
-export interface IInterviewerDTO {
-  username: string;
-  email: string;
-  password: string;
-  role: "USER" | "INTERVIEWER" | "ADMIN";
-  isVerified?: boolean;
-}
+// ✅ single source of truth (prevents enum drift)
+export const DIFFICULTY_LEVELS = ["entry", "mid", "senior", "jobDescription"] as const;
+export type DifficultyLevel = (typeof DIFFICULTY_LEVELS)[number];
+
 
 // Mock offering type (single domain + multiple skills/industries)
 export interface IMockOffering {
@@ -16,29 +12,12 @@ export interface IMockOffering {
   domainId: Types.ObjectId;
   skillIds: Types.ObjectId[];
   industryIds: Types.ObjectId[];
+  signature: string;
   difficultyLevels: {
-    // pricing tiers for this combo
-    level: "entry" | "mid" | "senior" | "job_desc_only";
-    duration?: number; // minutes
+    level: DifficultyLevel;
     price: number; // in rupees
   }[];
   isActive: boolean;
-}
-
-export interface InterviewerProfileDTO {
-  _id: Types.ObjectId;
-  username: string;
-  email: string;
-  role: string;
-  isBlocked: boolean;
-  isVerified: boolean;
-  profilePicUrl?: string;
-  bio?: string;
-  currentDesignation?: string;
-  // high‑level tags used for cards & profile (no mock offerings here)
-  domains: Types.ObjectId[];
-  skills: Types.ObjectId[];
-  industries: Types.ObjectId[];
 }
 
 export interface IInterviewerModel extends Document {
@@ -46,7 +25,7 @@ export interface IInterviewerModel extends Document {
   username: string;
   email: string;
   password: string;
-  role: "INTERVIEWER";
+  role: "USER" | "INTERVIEWER" | "ADMIN";
 
   //profile
   profilePicUrl?: string;
@@ -72,6 +51,21 @@ export interface IInterviewerModel extends Document {
 // Backwards‑compat convenience type used across services/repositories
 export type IInterviewer = IInterviewerModel;
 
+const difficultyLevelSchema = new Schema(
+  {
+    level: {
+      type: String,
+      enum: DIFFICULTY_LEVELS,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+  },
+  { _id: false }
+);
 
 const mockOfferingSchema = new Schema({
   domainId: {
@@ -93,23 +87,8 @@ const mockOfferingSchema = new Schema({
       required: true,
     },
   ],
-  difficultyLevels: [
-    {
-      level: {
-        type: String,
-        enum: ["entry", "mid", "senior", "job_desc_only"],
-        required: true,
-      },
-      duration: {
-        type: Number,
-        required: true,
-      },
-      price: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
+  signature: { type: String, required: true },
+  difficultyLevels: { type: [difficultyLevelSchema], required: true },
   isActive: {
     type: Boolean,
     default: true,
@@ -159,9 +138,6 @@ const interviewerSchema: Schema<IInterviewerModel> = new Schema(
   },
   { timestamps: true }
 );
-
-// Optional: unique index on email (already has unique: true)
-interviewerSchema.index({ email: 1 }, { unique: true });
 
 const InterviewerModel = mongoose.model<IInterviewerModel>(
   "INTERVIEWER",

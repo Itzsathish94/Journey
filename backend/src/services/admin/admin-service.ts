@@ -57,14 +57,14 @@ export class AdminService implements IAdminService {
     return await this._adminRepository.getInterviewerData(email);
   }
 
-  async updateProfile(email: string, data: BlockUpdate): Promise<IUser | null> {
-    return await this._adminRepository.updateProfile(email, data);
+  async blockOrUnblockUser(email: string, data: BlockUpdate): Promise<IUser | null> {
+    return await this._adminRepository.blockOrUnblockUser(email, data);
   }
 
-  async updateInterviewerProfile(
+  async blockOrUnblockInterviewer(
     email: string,
     data: BlockUpdate,
   ): Promise<IInterviewer | null> {
-    return await this._adminRepository.updateInterviewerProfile(email, data);
+    return await this._adminRepository.blockOrUnblockInterviewer(email, data);
   }
 }

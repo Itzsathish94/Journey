@@ -1,4 +1,5 @@
-import { Response } from "express";
+import { Request, Response } from "express";
+import { UserPayload } from "@/types/types";
 import { IInterviewerProfileService } from "@/services/interviewers/interfaces/IInterviewerProfileService";
 import { IInterviewerProfileController } from "./interfaces/IInterviewerProfileController";
 import { uploadToS3Bucket } from "../../utils/s3Bucket";
@@ -9,7 +10,6 @@ import {
 } from "../../utils/constants";
 import { appLogger } from "../../utils/logger";
 import { IInterviewer } from "../../models/interviewer-model";
-import { AuthenticatedRequest } from "../../middlewares/authenticated-routes";
 import { Types } from "mongoose";
 
 export class InterviewerProfileController
@@ -23,9 +23,9 @@ export class InterviewerProfileController
     this._profileService = profileService;
   }
 
-  async getProfile(req: AuthenticatedRequest, res: Response): Promise<void> {
+  async getProfile(req: Request, res: Response): Promise<void> {
     try {
-      const decoded = req.user?.email;
+      const decoded = (req.user as UserPayload | undefined)?.email;
 
       if (!decoded) {
         res
@@ -61,7 +61,7 @@ export class InterviewerProfileController
   }
 
   async updateProfile(
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response,
   ): Promise<void> {
     try {
@@ -74,8 +74,9 @@ export class InterviewerProfileController
         return;
       }
 
-      const userId = req.user?.id;
-      const email = req.user?.email;
+      const payload = req.user as UserPayload | undefined;
+      const userId = payload?.id;
+      const email = payload?.email;
 
       if (!userId || !email) {
         res
@@ -207,9 +208,9 @@ export class InterviewerProfileController
     }
   }
 
-  async updatePassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+  async updatePassword(req: Request, res: Response): Promise<void> {
     try {
-      const email = req.user?.email;
+      const email = (req.user as UserPayload | undefined)?.email;
 
       if (!email) {
         res

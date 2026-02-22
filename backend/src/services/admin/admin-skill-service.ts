@@ -1,8 +1,7 @@
 // src/services/admin/admin-skill-service.ts
 import { IAdminSkillService } from "./interfaces/IAdminSkillService";
 import { IAdminSkillRepository } from "../../repositories/admin-repository/interfaces/IAdminSkillRepository";
-import { ISkillModel, ISkillPopulated } from "../../models/category/skill-model";
-import { Types } from 'mongoose';
+import { ISkillModel } from "../../models/category/skill-model";
 
 export class AdminSkillService implements IAdminSkillService {
   private _skillRepository: IAdminSkillRepository;
@@ -11,58 +10,42 @@ export class AdminSkillService implements IAdminSkillService {
     this._skillRepository = skillRepository;
   }
 
-  async findSkillByName(skillName: string, domainId: string): Promise<ISkillModel | null> {
-    return this._skillRepository.findSkillByName(skillName, domainId);
+  async findSkillByName(skillName: string): Promise<ISkillModel | null> {
+    return this._skillRepository.findSkillByName(skillName);
   }
 
   async findSkillById(skillId: string): Promise<ISkillModel | null> {
     return this._skillRepository.findById(skillId);
   }
 
-  async addSkill(skillName: string, domainId: string): Promise<ISkillModel> {
+  async addSkill(skillName: string): Promise<ISkillModel> {
     const trimmedSkillName = skillName.trim();
     if (!trimmedSkillName) {
       throw new Error("Skill name is required");
     }
   
-    const existingSkill = await this.findSkillByName(trimmedSkillName, domainId);
+    const existingSkill = await this.findSkillByName(trimmedSkillName);
     if (existingSkill) {
-      throw new Error(`Skill "${trimmedSkillName}" already exists in this domain`);
+      throw new Error(`Skill "${trimmedSkillName}" already exists`);
     }
   
-    if (!Types.ObjectId.isValid(domainId)) {
-      throw new Error("Invalid domain ID");
-    }
-  
-    // Just pass the string — Mongoose casts it automatically
     return this._skillRepository.create({
       skillName: trimmedSkillName,
-      domainId,           // ← string is fine here
     });
   }
   
-  async updateSkill(skillId: string, skillName: string, domainId: string): Promise<ISkillModel | null> {
-    if (!Types.ObjectId.isValid(domainId)) {
-      throw new Error("Invalid domain ID format");
-    }
-  
+  async updateSkill(skillId: string, skillName: string): Promise<ISkillModel | null> {
     return this._skillRepository.update(skillId, {
       skillName,
-      domainId,           // ← string is fine here too
     });
   }
 
   async getAllSkills(
     page: number,
     limit: number,
-    search: string = "",
-    domainId?: string
-  ): Promise<{ data: ISkillPopulated[]; total: number }> {
-    return this._skillRepository.getAllSkillsPaginated(page, limit, search, domainId);
-  }
-
-  async getSkillsByDomainId(domainId: string): Promise<ISkillPopulated[]> {
-    return this._skillRepository.getSkillsByDomainId(domainId);
+    search: string = ""
+  ): Promise<{ data: ISkillModel[]; total: number }> {
+    return this._skillRepository.getAllSkillsPaginated(page, limit, search);
   }
 
   async toggleActiveSkill(skillId: string): Promise<ISkillModel | null> {
@@ -71,6 +54,6 @@ export class AdminSkillService implements IAdminSkillService {
 
   async deleteSkill(skillId: string): Promise<boolean> {
     const result = await this._skillRepository.delete(skillId);
-    return !!result;  // Convert to boolean
+    return !!result;
   }
 }

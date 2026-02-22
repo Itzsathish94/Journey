@@ -1,4 +1,5 @@
-import { Response } from "express";
+import { Request, Response } from "express";
+import { UserPayload } from "@/types/types";
 import { IUserProfileService } from "../../services/user/interfaces/IUserProfileService";
 import { IUserProfileController } from "./interfaces/IUserProfileController";
 import { uploadToS3Bucket } from "../../utils/s3Bucket";
@@ -8,7 +9,6 @@ import {
   UserErrorMessages,
 } from "../../utils/constants";
 import bcrypt from "bcrypt";
-import { AuthenticatedRequest } from "../../middlewares/authenticated-routes";
 import { appLogger } from "../../utils/logger";
 import { IUser } from "../../models/user-model";
 
@@ -20,11 +20,11 @@ export class UserProfileController implements IUserProfileController {
   }
 
   async getProfile(
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response,
   ): Promise<void> {
     try {
-      const email = req.user?.email;
+      const email = (req.user as UserPayload | undefined)?.email;
       if (!email) {
         res.status(StatusCode.UNAUTHORIZED).json({
           success: false,
@@ -58,11 +58,11 @@ export class UserProfileController implements IUserProfileController {
   }
 
   async updateProfile(
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response,
   ): Promise<void> {
     try {
-      const userId = req.user?.id;
+      const userId = (req.user as UserPayload | undefined)?.id;
       if (!userId) {
         res.status(StatusCode.UNAUTHORIZED).json({
           success: false,
@@ -71,23 +71,25 @@ export class UserProfileController implements IUserProfileController {
         return;
       }
 
-      const { username, skills, expertise, currentStatus } = req.body;
+      const { username } = req.body;
 
       let profilePicUrl;
       if (req.file) {
         profilePicUrl = await uploadToS3Bucket(req.file, "users");
       }
 
-      const parsedSkills = skills ? JSON.parse(skills) : [];
-      const parsedExpertise = expertise ? JSON.parse(expertise) : [];
-
       const updateData: Partial<IUser> = {
         ...(username && { username }),
-        ...(parsedSkills && { skills: parsedSkills }),
-        ...(parsedExpertise && { expertise: parsedExpertise }),
-        ...(currentStatus && { currentStatus }),
         ...(profilePicUrl && { profilePicUrl }),
       };
+
+      if (Object.keys(updateData).length === 0) {
+        res.status(StatusCode.BAD_REQUEST).json({
+          success: false,
+          message: UserErrorMessages.PROFILE_UPDATE_FAILED,
+        });
+        return;
+      }
 
       const updatedDTO = await this._userProfileService.updateProfile(
         userId,
@@ -117,11 +119,11 @@ export class UserProfileController implements IUserProfileController {
   }
 
   async updatePassword(
-    req: AuthenticatedRequest,
+    req: Request,
     res: Response,
   ): Promise<void> {
     try {
-      const email = req.user?.email;
+      const email = (req.user as UserPayload | undefined)?.email;
       if (!email) {
         res.status(StatusCode.UNAUTHORIZED).json({
           success: false,

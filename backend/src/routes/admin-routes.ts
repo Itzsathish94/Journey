@@ -34,30 +34,33 @@ router.put(
   "/blockUser/:email",
   authenticateToken,
   isAdmin,
-  adminController.blockUser.bind(adminController),
+  adminController.blockOrUnblockUser.bind(adminController),
 );
 router.put(
   "/blockInterviewer/:email",
   authenticateToken,
   isAdmin,
-  adminController.blockInterviewer.bind(adminController),
+  adminController.blockOrUnblockInterviewer.bind(adminController),
 );
 
 //verification  routes
 router.get(
   "/request/:email",
+  authenticateToken,
   isAdmin,
   adminVerificationController.getRequestData.bind(adminVerificationController),
 );
 
 router.get(
   "/requests",
+  authenticateToken,
   isAdmin,
   adminVerificationController.getAllRequests.bind(adminVerificationController),
 );
 
 router.post(
   "/approveRequest",
+  authenticateToken,
   isAdmin,
   adminVerificationController.approveRequest.bind(adminVerificationController),
 );

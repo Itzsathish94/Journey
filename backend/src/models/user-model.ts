@@ -15,10 +15,6 @@ export interface IUser extends Document {
   profilePicUrl?: string;
   isVerified: boolean;
   isBlocked: boolean;
-  skills?: string[];
-  expertise?: string[];
-  currentStatus?: string;
-  lastLogin?: Date;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -56,19 +52,6 @@ const userSchema: Schema<IUser> = new Schema(
       type: Boolean,
       required: true,
       default: false,
-    },
-    skills: { type: [String], default: [] },
-    expertise: { type: [String], default: [] },
-    currentStatus: {
-      type: String,
-      enum: [
-        "User",
-        "Working Professional",
-        "Freelancer",
-        "Job Seeker",
-        "other",
-      ],
-      default: "User",
     },
   },
   { timestamps: true },

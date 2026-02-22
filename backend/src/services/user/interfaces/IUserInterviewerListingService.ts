@@ -1,17 +1,26 @@
 import { IInterviewer } from "../../../models/interviewer-model";
 
+export interface FilterOption {
+  id: string;
+  name: string;
+}
+
 export interface IUserInterviewerListingService {
   getPaginatedinterviewers(
     page: number,
     limit: number,
     search?: string,
     sortOrder?: "asc" | "desc",
-    domainId?: string,
-    skillId?: string,
-    industryId?: string,
+    domainIds?: string[],
+    skillIds?: string[],
+    industryIds?: string[],
   ): Promise<{ data: IInterviewer[]; total: number }>;
 
   getinterviewerById(id: string): Promise<IInterviewer | null>;
 
-  getAvailableFilters(): Promise<{ skills: string[]; expertise: string[] }>;
+  getAvailableFilters(domainIds?: string[]): Promise<{
+    domains: FilterOption[];
+    skills: FilterOption[];
+    industries: FilterOption[];
+  }>;
 }

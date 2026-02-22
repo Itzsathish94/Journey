@@ -25,8 +25,8 @@ export interface IAdminService {
   getInterviewerData(email: string): Promise<IInterviewer | null>;
 
   //block or unblock
-  updateProfile(email: string, data: BlockUpdate): Promise<IUser | null>;
-  updateInterviewerProfile(
+  blockOrUnblockUser(email: string, data: BlockUpdate): Promise<IUser | null>;
+  blockOrUnblockInterviewer(
     email: string,
     data: BlockUpdate,
   ): Promise<IInterviewer | null>;

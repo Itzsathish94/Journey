@@ -10,6 +10,7 @@ export interface IInterviewerMockRepository {
     interviewerId: string,
     mockId: string,
     update: Partial<IMockOffering>,
+    signature?: string
   ): Promise<IInterviewerModel | null>;
 
   toggleMockActive(

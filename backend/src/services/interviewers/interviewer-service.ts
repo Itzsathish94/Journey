@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import { IInterviewer } from "../../models/interviewer-model";
-import { IInterviewerDTO, IInterviewerModel } from "../../models/interviewer-model";
+import { IInterviewerModel } from "../../models/interviewer-model";
+import {IInterviewerDTO} from "../../dto/interviewer-dto/interviewer-dto"
 import IInterviewerRepository from "../../repositories/interviewer-repository/interfaces/IInterviewerRepository";
 import IInterviewerService from "./interfaces/IInterviewerService";
 

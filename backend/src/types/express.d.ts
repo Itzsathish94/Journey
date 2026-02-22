@@ -1,8 +1,14 @@
 import { UserPayload } from './types';
-import { IUser } from '../models/user-model';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    user?: UserPayload | IUser;
+    user?: UserPayload;
+  }
+}
+
+// Override Passport's empty Express.User so req.user has id, email, role
+declare global {
+  namespace Express {
+    interface User extends UserPayload {}
   }
 }

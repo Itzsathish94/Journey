@@ -1,5 +1,5 @@
 import { IInterviewer } from "../../../models/interviewer-model";
-import { InterviewerProfileDTO } from "../../../models/interviewer-model";
+import { InterviewerProfileDTO } from "../../../dto/interviewer-dto/interviewer-profile-dto";
 
 export interface IInterviewerProfileService {
   getProfile(email: string): Promise<InterviewerProfileDTO | null>;

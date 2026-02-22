@@ -1,5 +1,4 @@
-// src/models/category/industry-model.ts
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 import {Types} from 'mongoose';
 
 export interface IIndustryModel extends Document {

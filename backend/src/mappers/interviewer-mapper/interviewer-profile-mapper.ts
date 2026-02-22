@@ -1,4 +1,6 @@
-import { IInterviewerModel, InterviewerProfileDTO } from "../../models/interviewer-model";
+import { IInterviewerModel } from "../../models/interviewer-model";
+import {InterviewerProfileDTO} from "../../dto/interviewer-dto/interviewer-profile-dto"
+
 
 export const toInterviewerProfileDTO = (
   interviewer: IInterviewerModel,
@@ -15,8 +17,9 @@ export const toInterviewerProfileDTO = (
     bio: interviewer.bio,
     currentDesignation: interviewer.currentDesignation,
     // high‑level tags shown on profile/cards (no offerings here)
-    domains: interviewer.domains || [],
-    skills: interviewer.skills || [],
-    industries: interviewer.industries || [],
+    domains: interviewer.domains?.map((domain: any) => domain.name || domain) || [],
+    skills: interviewer.skills?.map((skill: any) => skill.name || skill) || [],
+    industries: interviewer.industries?.map((industry: any) => industry.name || industry) || [],
   };
 };
+

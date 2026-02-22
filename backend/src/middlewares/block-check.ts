@@ -1,18 +1,19 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
+import { UserPayload } from "@/types/types";
 import { StatusCode, Roles } from "../utils/enum";
 import { AuthErrorMsg } from "../utils/constants";
 import { UserRepository } from "../repositories/user-repository.ts/user-repository";
 import InterviewerRepository from "../repositories/interviewer-repository/interviewer-repository";
-import { AuthenticatedRequest } from "./authenticated-routes";
 import { appLogger } from "../utils/logger";
 
 export const restrictBlockedUser = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
-    if (!req.user || !req.user.id || !req.user.role) {
+    const payload = req.user as UserPayload | undefined;
+    if (!payload || !payload.id || !payload.role) {
       res.clearCookie("accessToken");
       res.clearCookie("refreshToken");
       res
@@ -22,13 +23,13 @@ export const restrictBlockedUser = async (
     }
 
     let user;
-    if (req.user.role === Roles.USER) {
+    if (payload.role === Roles.USER) {
       const userRepo = new UserRepository();
-      user = await userRepo.findById(req.user.id);
-    } else if (req.user.role === Roles.INTERVIEWER) {
+      user = await userRepo.findById(payload.id);
+    } else if (payload.role === Roles.INTERVIEWER) {
       const interviewerRepo = new InterviewerRepository();
-      user = await interviewerRepo.findById(req.user.id);
-    } else if (req.user.role === Roles.ADMIN) {
+      user = await interviewerRepo.findById(payload.id);
+    } else if (payload.role === Roles.ADMIN) {
       return next();
     } else {
       res

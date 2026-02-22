@@ -8,9 +8,6 @@ export const toUserProfileDTO = (
   return {
     username: user.username,
     email: user.email,
-    skills: user.skills || [],
-    expertise: user.expertise || [],
     profilePicUrl: profilePicUrl || user.profilePicUrl,
-    currentStatus: user.currentStatus,
   };
 };

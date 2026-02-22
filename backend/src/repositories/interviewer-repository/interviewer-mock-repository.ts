@@ -18,9 +18,13 @@ export class InterviewerMockRepository
     interviewerId: string,
     offering: Omit<IMockOffering, "_id">,
   ): Promise<IInterviewerModel | null> {
-    return await this.update(interviewerId, {
-      $push: { offerings: offering },
-    } as any);
+    return this.model
+      .findByIdAndUpdate(
+        interviewerId,
+        { $push: { offerings: offering } },
+        { new: true, runValidators: true },
+      )
+      .exec();
   }
 
   async getMockOfferings(interviewerId: string): Promise<IMockOffering[]> {
@@ -32,32 +36,31 @@ export class InterviewerMockRepository
     interviewerId: string,
     mockId: string,
     update: Partial<IMockOffering>,
+    signature?: string,
   ): Promise<IInterviewerModel | null> {
     const set: Record<string, unknown> = {};
-
+  
     if (update.domainId) set["offerings.$.domainId"] = update.domainId;
     if (update.skillIds) set["offerings.$.skillIds"] = update.skillIds;
-    if (update.industryIds)
-      set["offerings.$.industryIds"] = update.industryIds;
-    if (update.difficultyLevels)
-      set["offerings.$.difficultyLevels"] = update.difficultyLevels;
-    if (typeof update.isActive === "boolean")
-      set["offerings.$.isActive"] = update.isActive;
-
+    if (update.industryIds) set["offerings.$.industryIds"] = update.industryIds;
+    if (update.difficultyLevels) set["offerings.$.difficultyLevels"] = update.difficultyLevels;
+    if (typeof update.isActive === "boolean") set["offerings.$.isActive"] = update.isActive;
+  
+    // ✅ allow updating signature when combo changes
+    if (signature) set["offerings.$.signature"] = signature;
+  
     if (Object.keys(set).length === 0) {
-      return await this.model
-        .findOne({ _id: new Types.ObjectId(interviewerId) })
-        .exec();
+      return this.model.findById(interviewerId).exec();
     }
-
-    return await this.model
+  
+    return this.model
       .findOneAndUpdate(
         {
           _id: new Types.ObjectId(interviewerId),
           "offerings._id": new Types.ObjectId(mockId),
         },
         { $set: set },
-        { new: true },
+        { new: true, runValidators: true },
       )
       .exec();
   }

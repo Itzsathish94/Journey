@@ -1,32 +1,32 @@
-import { IMockOffering } from "../../../models/interviewer-model";
+import { DifficultyLevel, IMockOffering } from "../../../models/interviewer-model";
+
+export type CreateMockOfferingPayload = {
+  domainId: string;
+  skillIds: string[];
+  industryIds: string[];
+  difficultyLevels: {
+    level: DifficultyLevel;
+    price: number;
+  }[];
+};
+
+export type UpdateMockOfferingPayload = {
+  difficultyLevels: {
+    level: DifficultyLevel;
+    price: number;
+  }[];
+};
 
 export interface IInterviewerMockService {
   getMyOfferings(interviewerId: string): Promise<IMockOffering[]>;
 
-  createOffering(
-    interviewerId: string,
-    payload: {
-      domainId: string;
-      skillIds: string[];
-      industryIds: string[];
-      difficultyLevels: {
-        level: "entry" | "mid" | "senior" | "job_desc_only";
-        duration?: number;
-        price: number;
-      }[];
-    },
-  ): Promise<IMockOffering[]>;
+  createOffering(interviewerId: string, payload: CreateMockOfferingPayload): Promise<IMockOffering>;
 
   updateOffering(
     interviewerId: string,
     mockId: string,
-    update: Partial<IMockOffering>,
-  ): Promise<IMockOffering[]>;
+    update: UpdateMockOfferingPayload,
+  ): Promise<IMockOffering>;
 
-  toggleOffering(
-    interviewerId: string,
-    mockId: string,
-    isActive: boolean,
-  ): Promise<IMockOffering[]>;
+  toggleOffering(interviewerId: string, mockId: string, isActive: boolean): Promise<IMockOffering>;
 }
-

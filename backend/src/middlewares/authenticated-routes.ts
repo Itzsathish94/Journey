@@ -5,38 +5,18 @@ import { AuthErrorMsg } from "../utils/constants";
 import { StatusCode } from "../utils/enum";
 import dotenv from "dotenv";
 import { appLogger } from "../utils/logger";
+import { UserPayload } from "@/types/types";
 
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET as string;
 
-// ✅ Extend Express Request globally instead of a separate interface
-declare global {
-  namespace Express {
-    interface Request {
-      user?: {
-        id: string;
-        email: string;
-        role: string;
-        iat: number;
-        exp: number;
-      };
-    }
-  }
-}
+// req.user type comes from src/types/express.d.ts (UserPayload)
 
-// ✅ Keep exporting for use in controllers
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    role: string;
-    iat: number;
-    exp: number;
-  };
+  user?: UserPayload;
 }
 
-// ✅ Use Request instead of AuthenticatedRequest in signature
 const authenticateToken = async (
   req: Request,
   res: Response,
@@ -54,7 +34,7 @@ const authenticateToken = async (
   }
 
   try {
-    const accessPayload = jwt.verify(accessToken, JWT_SECRET) as Express.Request["user"];
+    const accessPayload = jwt.verify(accessToken, JWT_SECRET) as UserPayload;
     req.user = accessPayload;
     next();
     return;
@@ -68,7 +48,7 @@ const authenticateToken = async (
       }
 
       try {
-        const refreshPayload = jwt.verify(refreshToken, JWT_SECRET) as Express.Request["user"];
+        const refreshPayload = jwt.verify(refreshToken, JWT_SECRET) as UserPayload;
 
         if (!refreshPayload) {
           res

@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from "mongoose";
 import { Types } from 'mongoose';
+
 export interface IDomainModel extends Document {
   _id: Types.ObjectId;
   domainName: string;

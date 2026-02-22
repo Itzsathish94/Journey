@@ -15,7 +15,7 @@ router.post("/signUp", userController.userSignUp.bind(userController));
 router.post("/resendOtp", userController.resendOtp.bind(userController));
 router.post("/createUser", userController.createUser.bind(userController));
 router.post("/login", userController.login.bind(userController));
-router.post("/logout", userController.logout.bind(userController));
+router.post("/logout", userController.logout.bind(userController)); //
 router.post("/verifyEmail", userController.verifyEmail.bind(userController));
 router.post("/verifyResetOtp", userController.verifyResetOtp.bind(userController));
 router.post("/forgotResendOtp", userController.forgotResendOtp.bind(userController));

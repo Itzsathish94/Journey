@@ -1,5 +1,5 @@
-import { Response } from "express";
-import { AuthenticatedRequest } from "../../middlewares/authenticated-routes";
+import { Request, Response } from "express";
+import { UserPayload } from "@/types/types";
 import { StatusCode } from "../../utils/enum";
 import { appLogger } from "../../utils/logger";
 import { handleControllerError } from "../../utils/error-handler";
@@ -23,9 +23,10 @@ export class InterviewerMockController implements IInterviewerMockController {
     this._mockService = mockService;
   }
 
-  async getMyMocks(req: AuthenticatedRequest, res: Response): Promise<void> {
+  // ✅ list all mocks (array)
+  async getMyMocks(req: Request, res: Response): Promise<void> {
     try {
-      const interviewerId = req.user?.id;
+      const interviewerId = (req.user as UserPayload | undefined)?.id;
       if (!interviewerId) {
         res.status(StatusCode.FORBIDDEN).json({
           success: false,
@@ -35,6 +36,7 @@ export class InterviewerMockController implements IInterviewerMockController {
       }
 
       const offerings = await this._mockService.getMyOfferings(interviewerId);
+
       res.status(StatusCode.OK).json({
         success: true,
         data: offerings.map(mapOffering),
@@ -45,9 +47,10 @@ export class InterviewerMockController implements IInterviewerMockController {
     }
   }
 
-  async createMock(req: AuthenticatedRequest, res: Response): Promise<void> {
+  // ✅ create one mock (single object)
+  async createMock(req: Request, res: Response): Promise<void> {
     try {
-      const interviewerId = req.user?.id;
+      const interviewerId = (req.user as UserPayload | undefined)?.id;
       if (!interviewerId) {
         res.status(StatusCode.FORBIDDEN).json({
           success: false,
@@ -56,35 +59,26 @@ export class InterviewerMockController implements IInterviewerMockController {
         return;
       }
 
-      const {
-        domainId,
-        skillIds,
-        industryIds,
-        difficultyLevels,
-      } = req.body as {
+      const { domainId, skillIds, industryIds, difficultyLevels } = req.body as {
         domainId: string;
         skillIds: string[];
         industryIds: string[];
         difficultyLevels: {
-          level: "entry" | "mid" | "senior" | "job_desc_only";
-          duration?: number;
+          level: "entry" | "mid" | "senior" | "jobDescription";
           price: number;
         }[];
       };
 
-      const offerings = await this._mockService.createOffering(
-        interviewerId,
-        {
-          domainId,
-          skillIds,
-          industryIds,
-          difficultyLevels,
-        },
-      );
+      const offering = await this._mockService.createOffering(interviewerId, {
+        domainId,
+        skillIds,
+        industryIds,
+        difficultyLevels,
+      });
 
       res.status(StatusCode.CREATED).json({
         success: true,
-        data: offerings.map(mapOffering),
+        data: mapOffering(offering),
       });
     } catch (error) {
       appLogger.error("Error in createMock", error);
@@ -92,9 +86,10 @@ export class InterviewerMockController implements IInterviewerMockController {
     }
   }
 
-  async updateMock(req: AuthenticatedRequest, res: Response): Promise<void> {
+  // ✅ update one mock (single object)
+  async updateMock(req: Request, res: Response): Promise<void> {
     try {
-      const interviewerId = req.user?.id;
+      const interviewerId = (req.user as UserPayload | undefined)?.id;
       const { mockId } = req.params;
 
       if (!interviewerId) {
@@ -105,39 +100,22 @@ export class InterviewerMockController implements IInterviewerMockController {
         return;
       }
 
-      const {
-        domainId,
-        skillIds,
-        industryIds,
-        difficultyLevels,
-        isActive,
-      } = req.body as Partial<{
-        domainId: string;
-        skillIds: string[];
-        industryIds: string[];
+      const update = req.body as {
         difficultyLevels: {
-          level: "entry" | "mid" | "senior" | "job_desc_only";
-          duration?: number;
+          level: "entry" | "mid" | "senior" | "jobDescription";
           price: number;
         }[];
-        isActive: boolean;
-      }>;
+      };
 
-      const offerings = await this._mockService.updateOffering(
+      const offering = await this._mockService.updateOffering(
         interviewerId,
         mockId,
-        {
-          domainId: domainId as any,
-          skillIds: skillIds as any,
-          industryIds: industryIds as any,
-          difficultyLevels,
-          isActive,
-        },
+        update,
       );
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: offerings.map(mapOffering),
+        data: mapOffering(offering),
       });
     } catch (error) {
       appLogger.error("Error in updateMock", error);
@@ -145,9 +123,10 @@ export class InterviewerMockController implements IInterviewerMockController {
     }
   }
 
-  async toggleMock(req: AuthenticatedRequest, res: Response): Promise<void> {
+  // ✅ toggle one mock (single object)
+  async toggleMock(req: Request, res: Response): Promise<void> {
     try {
-      const interviewerId = req.user?.id;
+      const interviewerId = (req.user as UserPayload | undefined)?.id;
       const { mockId } = req.params;
       const { isActive } = req.body as { isActive: boolean };
 
@@ -159,7 +138,7 @@ export class InterviewerMockController implements IInterviewerMockController {
         return;
       }
 
-      const offerings = await this._mockService.toggleOffering(
+      const offering = await this._mockService.toggleOffering(
         interviewerId,
         mockId,
         isActive,
@@ -167,7 +146,7 @@ export class InterviewerMockController implements IInterviewerMockController {
 
       res.status(StatusCode.OK).json({
         success: true,
-        data: offerings.map(mapOffering),
+        data: mapOffering(offering),
       });
     } catch (error) {
       appLogger.error("Error in toggleMock", error);
@@ -175,4 +154,3 @@ export class InterviewerMockController implements IInterviewerMockController {
     }
   }
 }
-

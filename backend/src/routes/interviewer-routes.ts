@@ -16,7 +16,7 @@ router.post("/signUp", interviewerController.signUp.bind(interviewerController))
 router.post("/resendOtp", interviewerController.resendOtp.bind(interviewerController));
 router.post("/createUser", interviewerController.createUser.bind(interviewerController));
 router.post("/login", interviewerController.login.bind(interviewerController));
-router.post("/logout", interviewerController.logout.bind(interviewerController));
+router.post("/logout",authenticateToken, restrictBlockedUser,isInterviewer, interviewerController.logout.bind(interviewerController));
 router.post("/verifyEmail", interviewerController.verifyEmail.bind(interviewerController));
 router.post("/verifyResetOtp", interviewerController.verifyResetOtp.bind(interviewerController));
 router.post("/forgotResendOtp", interviewerController.forgotResendOtp.bind(interviewerController));

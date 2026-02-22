@@ -1,8 +1,5 @@
 export interface UserProfileDTO {
-    username: string;
-    email: string;
-    skills: string[];
-    expertise: string[];
-    profilePicUrl?: string;
-    currentStatus?: string;
-  }
+  username: string;
+  email: string;
+  profilePicUrl?: string;
+}

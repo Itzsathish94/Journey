@@ -17,9 +17,9 @@ export class UserInterviewerListingService
     limit: number,
     search?: string,
     sortOrder?: "asc" | "desc",
-    domainId?: string,
-    skillId?: string,
-    industryId?: string,
+    domainIds?: string[],
+    skillIds?: string[],
+    industryIds?: string[],
   ): Promise<{ data: IInterviewer[]; total: number }> {
     const { data, total } =
       await this._interviewerListingRepo.listinterviewerInterviewersPaginated(
@@ -27,9 +27,9 @@ export class UserInterviewerListingService
         limit,
         search,
         sortOrder,
-        domainId,
-        skillId,
-        industryId,
+        domainIds,
+        skillIds,
+        industryIds,
       );
 
     const updatedData = await Promise.all(
@@ -56,10 +56,11 @@ export class UserInterviewerListingService
     return interviewerObj as IInterviewer;
   }
 
-  async getAvailableFilters(): Promise<{
-    skills: string[];
-    expertise: string[];
+  async getAvailableFilters(domainIds?: string[]): Promise<{
+    domains: { id: string; name: string }[];
+    skills: { id: string; name: string }[];
+    industries: { id: string; name: string }[];
   }> {
-    return await this._interviewerListingRepo.getAvailableSkillsAndExpertise();
+    return await this._interviewerListingRepo.getAvailableFilters(domainIds);
   }
 }

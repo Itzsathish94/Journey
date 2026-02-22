@@ -244,6 +244,8 @@ export const JwtConfig = {
     TOKEN_EXPIRED: "Session expired. Please log in again.",
     PASSWORD_RESET_FAILED: "Password reset failed.",
     GOOGLE_LOGIN_FAILED: "Google login failed.",
+    OFFERING_NOT_CREATED: "Mock not created",
+    MOCK_OFFERING_NOT_FOUND:"Mock offering not found",
   
     // Profile & Data
     INTERVIEWER_NOT_FOUND: "Interviewer not found.",

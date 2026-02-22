@@ -186,7 +186,7 @@ export class AdminController implements IAdminController {
     }
   }
 
-  async blockUser(req: Request, res: Response): Promise<void> {
+  async blockOrUnblockUser(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
 
@@ -203,7 +203,7 @@ export class AdminController implements IAdminController {
       const emailId = userData.email;
       const isBlocked = !userData?.isBlocked;
 
-      const userStatus = await this._adminService.updateProfile(emailId, {
+      const userStatus = await this._adminService.blockOrUnblockUser(emailId, {
         isBlocked,
       });
 
@@ -224,7 +224,7 @@ export class AdminController implements IAdminController {
     }
   }
 
-  async blockInterviewer(req: Request, res: Response): Promise<void> {
+  async blockOrUnblockInterviewer(req: Request, res: Response): Promise<void> {
     try {
       const { email } = req.params;
       const userData = await this._adminService.getInterviewerData(email);
@@ -240,7 +240,7 @@ export class AdminController implements IAdminController {
       const emailId = userData.email;
       const isBlocked = !userData?.isBlocked;
 
-      const userStatus = await this._adminService.updateInterviewerProfile(
+      const userStatus = await this._adminService.blockOrUnblockInterviewer(
         emailId,
         { isBlocked },
       );
